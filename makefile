@@ -1,4 +1,4 @@
-Flags = -Wall -g -Werror -lncurses
+Flags = -Wall -g -Werror
 
 all : prog
 
