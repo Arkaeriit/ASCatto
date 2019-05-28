@@ -55,4 +55,10 @@ void test5(){
     A_writeFile(test,"/home/maxime/testwr");
 }
 
-    
+void test6(){
+     struct headFile* test=A_readFile("/home/maxime/test");       
+     I_init();
+     I_redraw(test,2);
+     getchar();
+     endwin();
+}
