@@ -60,6 +60,7 @@ void I_redraw(struct headFile* liste,int offset){
     if(liste->nLignes > 99) decades++;
     if(liste->nLignes > 999) decades++;
     if(liste->nLignes > 9999) decades++;
+    clear();
     I_displayListe(liste,decades,offset);
     I_displayInputBar(liste->nLignes,decades,offset);
     refresh();
@@ -71,15 +72,16 @@ void I_idle(struct headFile* liste){
     int stop = 0;
     while(!stop){
         char c = getch();
-        if(c==259 && offset > 1){
-            offset++;
-            I_redraw(liste,offset);
-        }
-        if(c==258 && offset < liste->nLignes){
+        mvprintw(1,1,"%i",c);
+        if(c==65 && offset > 1){
             offset--;
             I_redraw(liste,offset);
         }
-        if(c==17){
+        if(c==66 && offset < liste->nLignes){
+            offset++;
+            I_redraw(liste,offset);
+        }
+        if(c==81){
             stop=1;
         }
     }
