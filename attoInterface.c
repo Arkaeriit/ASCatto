@@ -66,13 +66,13 @@ void I_redraw(struct headFile* liste,int offset){
     refresh();
 }
 
-void I_idle(struct headFile* liste){
+void I_idle(struct headFile* liste,char* nom){
     int offset = 1;
     I_redraw(liste,offset);
     int stop = 0;
     while(!stop){
         char c = getch();
-        mvprintw(1,1,"%i",c);
+      mvprintw(1,1,"%i",c);
         if(c==65 && offset > 1){
             offset--;
             I_redraw(liste,offset);
@@ -84,7 +84,47 @@ void I_idle(struct headFile* liste){
         if(c==81){
             stop=1;
         }
+        if(c==110){
+            I_nouvelleLigne(liste);
+            I_redraw(liste,offset);
+        }
+        if(c==115){
+            if(strcmp(nom,"")==0){
+                nom = I_rename();
+                I_redraw(liste,offset);
+            }
+            while(A_writeFile(liste,nom)){ 
+                I_redraw(liste,offset);
+                printw("Nom invalide...  ");
+                nom = I_rename();
+            }
+            I_redraw(liste,offset);
+        }
     }
+    echo();
     endwin();
+}
+
+void I_nouvelleLigne(struct headFile* liste){
+    A_append(liste);
+    curs_set(1);
+    echo();
+    char* ligneN = malloc(sizeof(char) * 4096);
+    getstr(ligneN);
+    strcat(ligneN,"\n"); //important pour réenregistrer ensuite
+    A_writeListe(liste,liste->nLignes,ligneN);
+    noecho();
+    curs_set(0);
+}
+
+char* I_rename(){
+    char* ret=malloc(sizeof(char) * 1024);
+    printw("Nom du fichier : ");
+    echo();
+    curs_set(1);
+    getstr(ret);
+    noecho();
+    curs_set(0);
+    return ret;
 }
 

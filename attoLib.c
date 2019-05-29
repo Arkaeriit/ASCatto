@@ -1,5 +1,7 @@
 #include "attoLib.h"
 
+//vertion modifiée pour ASCatto
+
 struct headFile* A_initialisation(void){
     struct headFile* ret = malloc(sizeof(struct headFile));
     ret->nLignes = 0;
@@ -103,9 +105,8 @@ char* A_readListe(struct headFile* liste,int element){
 struct headFile* A_readFile(char *filename){
         FILE* fptr;
         struct headFile* ret = A_initialisation();
-        if( (fptr = fopen(filename,"r")) == NULL){ //on essaye de metre un pointeur vers le fichier dans fptr. Si ne marche pas on lira un NULL et donc on arretera tout. Sinon on va dans le else
-            printf("Fichier non valable");
-            exit(2);
+        if( (fptr = fopen(filename,"r")) == NULL){ //on essaye de metre un pointeur vers le fichier dans fptr. Si ne marche pas on lira un NULL et donc on créer le fichier de toutes pieces. NB: ce comportement n'est pas celui avec lequel j'ai pensé la libraiie et est uniquement msi en place pour pouvoir faire marcher le programme. Sinon on va dans le else
+            A_append(ret); //La fin justifie les moyens.
         }else{
             char* str = malloc(sizeof(char) * 4096); //memoire tampon pour srocker une ligne
             while(fgets(str, 4096, fptr) != NULL){ //On essaye de lire la nouvelle ligne de fptr. Si ça ne marche pas on arrête nos bêtises mais si ça marche on la stoque dans str
@@ -117,11 +118,10 @@ struct headFile* A_readFile(char *filename){
     return ret;
 }
 
-void A_writeFile(struct headFile* liste, char* filename){
+int A_writeFile(struct headFile* liste, char* filename){
     FILE* fptr;
-    if( (fptr = fopen(filename,"w")) == NULL){ //on essaye de metre un pointeur vers le fichier dans fptr. Si ne marche pas on lira un NULL et donc on arretera tout. Sinon on va dans le else
-        printf("Fichier non valable");
-        exit(2);
+    if( (fptr = fopen(filename,"w")) == NULL){ //on essaye de metre un pointeur vers le fichier dans fptr. Si ne marche pas on renvoie 1 pour idiquer que ça ne marche pas. Sinon on va dans le else
+        return 1;
     }else{
         struct ligneFile* pnt = liste->next;
         for(int i=1;i<liste->nLignes;i++){
@@ -131,6 +131,7 @@ void A_writeFile(struct headFile* liste, char* filename){
         fputs( pnt->ligne,fptr );
         fclose(fptr); //On ferme le fichier
     }
+    return 0;
 }
 
 

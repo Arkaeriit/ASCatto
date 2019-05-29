@@ -37,5 +37,5 @@ char* A_readListe(struct headFile* liste,int element); //renvoie la chaine de ch
 
 //Fonctions de gestion des fichiers
 struct headFile* A_readFile(char* fichier); //met chaque ligne de fichier dans un élément d'une liste
-void A_writeFile(struct headFile* liste,char* fichier); //écrit le contenu de la liste dans fichier
+int A_writeFile(struct headFile* liste,char* fichier); //écrit le contenu de la liste dans fichier
 
