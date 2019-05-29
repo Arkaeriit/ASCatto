@@ -73,22 +73,22 @@ void I_idle(struct headFile* liste,char* nom){
     while(!stop){
         char c = getch();
       mvprintw(1,1,"%i",c);
-        if(c==65 && offset > 1){
+        if(c==65 && offset > 1){ //up
             offset--;
             I_redraw(liste,offset);
         }
-        if(c==66 && offset < liste->nLignes){
+        if(c==66 && offset < liste->nLignes){ //down
             offset++;
             I_redraw(liste,offset);
         }
-        if(c==81){
+        if(c==81){ //Q
             stop=1;
         }
-        if(c==110){
+        if(c==110){ //n
             I_nouvelleLigne(liste);
             I_redraw(liste,offset);
         }
-        if(c==115){
+        if(c==115){ //s
             if(strcmp(nom,"")==0){
                 nom = I_rename();
                 I_redraw(liste,offset);
