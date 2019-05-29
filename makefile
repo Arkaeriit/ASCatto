@@ -4,7 +4,7 @@ NC = -lncurses
 all : prog
 
 prog : attoLib.o main.o test.o interface.o
-	gcc main.o test.o attoLib.o interface.o $(Flags) $(NC) -o prgMk
+	gcc main.o test.o attoLib.o interface.o $(Flags) $(NC) -o ASCattoTest
 
 attoLib.o : attoLib.c attoLib.h
 	gcc -c attoLib.c $(Flags) -o attoLib.o
@@ -22,4 +22,4 @@ clean :
 	rm -f prgMK
 
 test : clean all
-	./prgMk
+	./ASCattoTest

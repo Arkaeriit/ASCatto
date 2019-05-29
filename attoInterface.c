@@ -19,7 +19,7 @@ void I_displayListe(struct headFile* liste,int decades,int offset){ //TODO : à 
     }
 }
 
-void I_displayInputBar(int max,int decades,int offset){
+void I_displayInputBar(int max,int decades,int offset,char* nom){
     int col;  //les 3 lignes suivantes servent à connaitre les dimention de l'écran et ainsi écrire en bas sur toute la longueur sans problèmes
     int lig;
     getmaxyx(stdscr,lig,col);
@@ -48,61 +48,62 @@ void I_displayInputBar(int max,int decades,int offset){
             mvprintw(lig-2,i,"-");
         }
     }
-    char* howto = "TODO";
+    char* howto = "Press h for help";
     mvprintw(lig-3,0,howto);
+    mvprintw(lig-3,20,nom);
     mvprintw(lig-3,col- 2 * (2+decades)," %i/%i  ",offset,max);
     move(lig-1,0);
 }
 
-void I_redraw(struct headFile* liste,int offset){
-     int decades=1; //Nombres de caractères à prévoir pour écrire le numéro de la ligne
+void I_redraw(struct headFile* liste,int offset,char* nom){
+    int decades=1; //Nombres de caractères à prévoir pour écrire le numéro de la ligne
     if(liste->nLignes > 9) decades++;
     if(liste->nLignes > 99) decades++;
     if(liste->nLignes > 999) decades++;
     if(liste->nLignes > 9999) decades++;
     clear();
     I_displayListe(liste,decades,offset);
-    I_displayInputBar(liste->nLignes,decades,offset);
+    I_displayInputBar(liste->nLignes,decades,offset,nom);
     refresh();
 }
 
 void I_idle(struct headFile* liste,char* nom){
     int offset = 1;
-    I_redraw(liste,offset);
+    I_redraw(liste,offset,nom);
     int stop = 0;
     while(!stop){
         char c = getch();
-      mvprintw(1,1,"%i",c); //test
+      //mvprintw(1,1,"%i",c); //test
         if(c==65 && offset > 1){ //up  on bouge vers le début du fichier
             offset--;
-            I_redraw(liste,offset);
+            I_redraw(liste,offset,nom);
         }
         if(c==66 && offset < liste->nLignes){ //down on bouge vers le bas du fichier
             offset++;
-            I_redraw(liste,offset);
+            I_redraw(liste,offset,nom);
         }
         if(c==81){ //Q on arrète tout
             stop=1;
         }
         if(c==110){ //n on écrit une nouvelle ligne
             I_nouvelleLigne(liste);
-            I_redraw(liste,offset);
+            I_redraw(liste,offset,nom);
         }
         if(c==115){ //s on sauvegarde
             if(strcmp(nom,"")==0){
                 nom = I_rename();
-                I_redraw(liste,offset);
+                I_redraw(liste,offset,nom);
             }
             while(A_writeFile(liste,nom)){ 
-                I_redraw(liste,offset);
+                I_redraw(liste,offset,nom);
                 printw("Nom invalide...  ");
                 nom = I_rename();
             }
-            I_redraw(liste,offset);
+            I_redraw(liste,offset,nom);
         }
         if(c==101){ //e on change une ligne
             I_editLigne(liste);
-            I_redraw(liste,offset);
+            I_redraw(liste,offset,nom);
         }
     }
     echo();
@@ -142,12 +143,13 @@ void I_editLigne(struct headFile* liste){
     curs_set(1);
     char* StrTmp = malloc(sizeof(char) * 4000); //sert d'abord à strocher l'input pour ne numéro de la ligne puis l'input pour le contine
     while(lignE < 1 || lignE > liste->nLignes){
-        mvprintw(lig-1,0,"Ligne à éditer :      ");
-        move(lig-1,19); 
+        mvprintw(lig-3,0,"Ligne à éditer :      ");
+        move(lig-1,0); 
         getstr(StrTmp);
         lignE = atoi(StrTmp);
         for(int i=0;i<col;i++){ //On nétoie la zone d'input
             mvprintw(lig-1,i," ");
+            mvprintw(lig-3,i," ");
         }
         getch(); //TODO : COmprendre pourquoi ça ne marche pas sans ça
     }

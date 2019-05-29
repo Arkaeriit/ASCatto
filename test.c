@@ -58,7 +58,7 @@ void test5(){
 void test6(){
      struct headFile* test=A_readFile("/home/maxime/test");       
      I_init();
-     I_redraw(test,2);
+     I_redraw(test,2,"testTest");
      getchar();
      endwin();
 }
