@@ -67,7 +67,9 @@ void I_redraw(struct headFile* liste,int offset,char* nom){
     refresh();
 }
 
-void I_idle(struct headFile* liste,char* nom){
+void I_idle(struct headFile* liste,char* nomInit){
+    char* nom = malloc(sizeof(char) * 1000);
+    memcpy(nom,nomInit,strlen(nomInit));   
     int offset = 1;
     I_redraw(liste,offset,nom);
     int stop = 0;
@@ -91,13 +93,13 @@ void I_idle(struct headFile* liste,char* nom){
         }
         if(c==115){ //s on sauvegarde
             if(strcmp(nom,"")==0){
-                nom = I_rename();
+                I_rename(nom);
                 I_redraw(liste,offset,nom);
             }
             while(A_writeFile(liste,nom)){ 
                 I_redraw(liste,offset,nom);
                 printw("Nom invalide...  ");
-                nom = I_rename();
+                I_rename(nom);
             }
             I_redraw(liste,offset,nom);
         }
@@ -123,7 +125,7 @@ void I_nouvelleLigne(struct headFile* liste){
     curs_set(0);
 }
 
-char* I_rename(){ //TODO : changer la manière dont la mémoire pour le nom est allouée pour pouvoir éviter de générer des array en boucle
+void I_rename(char* nom){ //TODO : changer la manière dont la mémoire pour le nom est allouée pour pouvoir éviter de générer des array en boucle
     char* ret=malloc(sizeof(char) * 1024);
     printw("Nom du fichier : ");
     echo();
@@ -131,7 +133,11 @@ char* I_rename(){ //TODO : changer la manière dont la mémoire pour le nom est 
     getstr(ret);
     noecho();
     curs_set(0);
-    return ret;
+    for(int i=0;i<1024;i++){
+        *(nom+i)=0;
+    }
+    memcpy(nom,ret,strlen(ret));
+    free(ret);
 }
 
 void I_editLigne(struct headFile* liste){
@@ -151,10 +157,10 @@ void I_editLigne(struct headFile* liste){
             mvprintw(lig-1,i," ");
             mvprintw(lig-3,i," ");
         }
-        getch(); //TODO : COmprendre pourquoi ça ne marche pas sans ça
     }
     move(lig-1,0); //input pour le contenu de la ligne
     getstr(StrTmp);
+    strcat(StrTmp,"\n");
     A_writeListe(liste,lignE,StrTmp);
     free(StrTmp);
     noecho();

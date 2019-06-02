@@ -8,7 +8,7 @@ void I_displayInputBar(int max,int decade,int offset,char* nom); //Cette fonctio
 void I_redraw(struct headFile* liste,int offset, char* nom); //Cette fonction sert à tout afficher comme il faut
 
 //Fonctions liés aux inputs
-void I_idle(struct headFile* liste,char* nom); //fonction principale qui redirige l'utilisateur à chaque fois vers les autres fonctions
+void I_idle(struct headFile* liste,char* nomInit); //fonction principale qui redirige l'utilisateur à chaque fois vers les autres fonctions
 void I_nouvelleLigne(struct headFile* liste); //Cette fonction permet d'écrire dans une nouvelle ligne
-char* I_rename(); //permet de renomer le fichier édité
+void I_rename(char* nom); //permet de renomer le fichier édité
 void I_editLigne(struct headFile* liste); //permet d'éditer une ligne
