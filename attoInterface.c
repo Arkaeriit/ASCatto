@@ -147,17 +147,24 @@ void I_editLigne(struct headFile* liste){
     getmaxyx(stdscr,lig,col);
     echo();
     curs_set(1);
+    for(int i=0;i<col;i++){ //On nétoie la zone d'input
+        mvprintw(lig-1,i," ");
+        mvprintw(lig-3,i," ");
+    }
+    refresh();
     char* StrTmp = malloc(sizeof(char) * 4000); //sert d'abord à strocher l'input pour ne numéro de la ligne puis l'input pour le contine
     while(lignE < 1 || lignE > liste->nLignes){
         mvprintw(lig-3,0,EDIT);
         move(lig-1,0); 
         getstr(StrTmp);
+        if(strcmp(StrTmp,"") == 0) return;
         lignE = atoi(StrTmp);
         for(int i=0;i<col;i++){ //On nétoie la zone d'input
             mvprintw(lig-1,i," ");
             mvprintw(lig-3,i," ");
         }
     }
+    mvprintw(lig-3,0,A_readListe(liste,lignE)); //On affiche l'ancienne ligne
     move(lig-1,0); //input pour le contenu de la ligne
     getstr(StrTmp);
     strcat(StrTmp,"\n");
