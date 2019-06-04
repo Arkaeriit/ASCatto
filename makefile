@@ -17,9 +17,11 @@ test.o : test.c test.h attoLib.h attoInterface.h
 
 interface.o : attoInterface.h attoInterface.c attoLib.h
 	gcc -c attoInterface.c $(Flags) $(NC) -o interface.o
+
 clean :
 	rm -f *.o
 	rm -f prgMK
+	rm -f ASCattoTest
 
-test : clean all
+test : all
 	./ASCattoTest

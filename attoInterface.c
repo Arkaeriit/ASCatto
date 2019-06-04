@@ -1,4 +1,5 @@
 #include "attoInterface.h"
+#include "attoLangue.h"
 
 void I_init(){
     initscr();
@@ -48,9 +49,8 @@ void I_displayInputBar(int max,int decades,int offset,char* nom){
             mvprintw(lig-2,i,"-");
         }
     }
-    char* howto = "Press h for help";
-    mvprintw(lig-3,0,howto);
-    mvprintw(lig-3,20,nom);
+    mvprintw(lig-3,0,HOWTO);
+    mvprintw(lig-3,NAME_PAD,nom);
     mvprintw(lig-3,col- 2 * (2+decades)," %i/%i  ",offset,max);
     move(lig-1,0);
 }
@@ -98,7 +98,7 @@ void I_idle(struct headFile* liste,char* nomInit){
             }
             while(A_writeFile(liste,nom)){ 
                 I_redraw(liste,offset,nom);
-                printw("Nom invalide...  ");
+                printw(INVALIDE);
                 I_rename(nom);
             }
             I_redraw(liste,offset,nom);
@@ -127,7 +127,7 @@ void I_nouvelleLigne(struct headFile* liste){
 
 void I_rename(char* nom){ //TODO : changer la manière dont la mémoire pour le nom est allouée pour pouvoir éviter de générer des array en boucle
     char* ret=malloc(sizeof(char) * 1024);
-    printw("Nom du fichier : ");
+    printw(NAME);
     echo();
     curs_set(1);
     getstr(ret);
@@ -149,7 +149,7 @@ void I_editLigne(struct headFile* liste){
     curs_set(1);
     char* StrTmp = malloc(sizeof(char) * 4000); //sert d'abord à strocher l'input pour ne numéro de la ligne puis l'input pour le contine
     while(lignE < 1 || lignE > liste->nLignes){
-        mvprintw(lig-3,0,"Ligne à éditer :      ");
+        mvprintw(lig-3,0,EDIT);
         move(lig-1,0); 
         getstr(StrTmp);
         lignE = atoi(StrTmp);

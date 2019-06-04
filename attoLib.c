@@ -85,8 +85,11 @@ void A_writeListe(struct headFile* liste,int element,char* str){
         exit(EXIT_FAILURE);
     }
     struct ligneFile* pnt = liste->next;
-    for(int i=1;i<element;i++){
+    for(int i=1;i<element;i++){ //On se place sur le bon élément
         pnt=pnt->next;
+    }
+    for(int i=0;i<((strlen(pnt->ligne)+100-4096) * (strlen(pnt->ligne)<3996) +4096);i++){ //On nétoie la ligne
+        *(pnt->ligne + i) = 0;
     }
     memcpy(pnt->ligne,str,strlen(str));
 }
