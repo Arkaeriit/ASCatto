@@ -26,10 +26,14 @@ void A_supression(struct headFile* liste,int element){
         exit(EXIT_FAILURE);
     }
     if(element == 1){
-        struct ligneFile* tmp = liste->next;
-        liste->next=tmp->next;
-        free(tmp->ligne);
-        free(tmp);
+        if(liste->nLignes == 1){
+            free(liste->next);
+        }else{
+            struct ligneFile* tmp = liste->next;
+            liste->next=tmp->next;
+            free(tmp->ligne);
+            free(tmp);
+        }
     }else{
         struct ligneFile* pnt = liste->next;
         for(int i=1;i<element-1;i++){

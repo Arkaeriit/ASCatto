@@ -1,6 +1,7 @@
 #include "attoLib.h"
 #include "test.h"
 
+
 int main(int argc,char** argv){
     I_init();
     struct headFile* lst;
@@ -9,8 +10,8 @@ int main(int argc,char** argv){
         I_idle(lst,*(argv+1));
     }else{
         lst = A_initialisation();
-        A_append(lst);
         I_idle(lst,"");
     }
     return 0;
 }
+

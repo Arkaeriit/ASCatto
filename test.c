@@ -62,3 +62,10 @@ void test6(){
      getchar();
      endwin();
 }
+
+void test7(){
+    struct headFile* test=A_initialisation();
+    A_append(test);
+    A_supression(test,1);
+    A_append(test);
+}

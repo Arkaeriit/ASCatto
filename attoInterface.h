@@ -12,3 +12,7 @@ void I_idle(struct headFile* liste,char* nomInit); //fonction principale qui red
 void I_nouvelleLigne(struct headFile* liste); //Cette fonction permet d'écrire dans une nouvelle ligne
 void I_rename(char* nom); //permet de renomer le fichier édité
 void I_editLigne(struct headFile* liste); //permet d'éditer une ligne
+void I_delLigne(struct headFile* liste); //permet de supprimer une ligne
+void I_insert(struct headFile* liste); //permet d'insérer une ligne quelque part
+int I_help(struct headFile* liste,int offset,char* nom);//Permet d'afficher le message d'aide mais en plus permet à tout instant d'utiliser une commande et de retourner dans la boucle idle. Cela renvoit un entier qui nous sert à savoir si on a essayé d'arréter le programme lors de l'aide.
+void I_cleanBas(int col,int lig); //permet de nétoyer l'espace en bas de l'écrant pour ensuite entrer des info.

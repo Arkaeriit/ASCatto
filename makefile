@@ -1,27 +1,40 @@
 Flags = -Wall -g -Werror
 NC = -lncurses
 
-all : prog
+all : clean prog
 
-prog : attoLib.o main.o test.o interface.o
-	gcc main.o test.o attoLib.o interface.o $(Flags) $(NC) -o ASCattoTest
+prog : attoLib.o main.o interface.o
+	gcc main.o attoLib.o interface.o -Wall -Werror $(NC) -o ASCatto
 
 attoLib.o : attoLib.c attoLib.h
-	gcc -c attoLib.c $(Flags) -o attoLib.o
+	gcc -c attoLib.c -o attoLib.o
 
-main.o : main.c attoLib.h test.h
-	gcc -c main.c $(Flags) -o main.o
+main.o : main.c attoLib.h 
+	gcc -c main.c  $(NC) -o main.o
+
+interface.o : attoInterface.h attoInterface.c attoLib.h
+	gcc -c attoInterface.c $(NC) -o interface.o
+
+progTEST : attoLibTest.o mainTest.o test.o interfaceTest.o
+	gcc mainTest.o test.o attoLibTest.o interfaceTest.o $(Flags) $(NC) -o ASCattoTest
+
+attoLibTest.o : attoLib.c attoLib.h
+	gcc -c attoLib.c $(Flags) -o attoLibTest.o
+
+mainTest.o : main.c attoLib.h test.h
+	gcc -c main.c $(Flags) -o mainTest.o
 
 test.o : test.c test.h attoLib.h attoInterface.h
 	gcc -c test.c $(Flags) $(NC) -o test.o
 
-interface.o : attoInterface.h attoInterface.c attoLib.h
-	gcc -c attoInterface.c $(Flags) $(NC) -o interface.o
+interfaceTest.o : attoInterface.h attoInterface.c attoLib.h
+	gcc -c attoInterface.c $(Flags) $(NC) -o interfaceTest.o
 
 clean :
 	rm -f *.o
 	rm -f prgMK
 	rm -f ASCattoTest
+	rm -f ASCatto
 
-test : all
+test : progTEST
 	./ASCattoTest
