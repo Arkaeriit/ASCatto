@@ -2,6 +2,7 @@ attoLib.o
 interface.o
 main.o
 test.o
+test.c
 prgMK
 notes
 ASCattoTest

@@ -13,7 +13,11 @@ void I_init(){
 }
 
 void I_displayListe(struct headFile* liste,int decades,int offset){ 
-   for(int i=offset;i<=liste->nLignes;i++){
+    int lig = getmaxy(stdscr);
+    int max; //On ne veut pas avoir besoin d'afficher des lignes qui sont plus basse que l'écran.
+    if(lig+offset-4 > liste->nLignes) max = liste->nLignes;
+    else max = lig + offset- 4;    
+    for(int i=offset;i<=max;i++){
         for(int j=0;j<decades+3;j++){
             mvprintw(i-offset,j," ");
         }

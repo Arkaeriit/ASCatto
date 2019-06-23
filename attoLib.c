@@ -112,13 +112,18 @@ char* A_readListe(struct headFile* liste,int element){
 struct headFile* A_readFile(char *filename){
         FILE* fptr;
         struct headFile* ret = A_initialisation();
+        ret->next = malloc(sizeof(struct ligneFile));
+        struct ligneFile* pnt = ret->next;
         if( (fptr = fopen(filename,"r")) == NULL){ //on essaye de metre un pointeur vers le fichier dans fptr. Si ne marche pas on lira un NULL et donc on créer le fichier de toutes pieces. NB: ce comportement n'est pas celui avec lequel j'ai pensé la libraiie et est uniquement msi en place pour pouvoir faire marcher le programme. Sinon on va dans le else
             A_append(ret); //La fin justifie les moyens.
         }else{
             char* str = malloc(sizeof(char) * 4096); //memoire tampon pour srocker une ligne
             while(fgets(str, 4096, fptr) != NULL){ //On essaye de lire la nouvelle ligne de fptr. Si ça ne marche pas on arrête nos bêtises mais si ça marche on la stoque dans str
-                A_append(ret); //Si on a réussi à lire une ligne on l'ajoute à ret
-                A_writeListe(ret,ret->nLignes,str);
+                ret->nLignes++; //Si on a réussi à lire une ligne on l'ajoute à ret
+                pnt->ligne = malloc(sizeof(char) * 4096);
+                memcpy(pnt->ligne,str,strlen(str));
+                pnt->next = malloc(sizeof(struct ligneFile));
+                pnt = pnt->next;
             }
             fclose(fptr); //On ferme le fichier
         }
