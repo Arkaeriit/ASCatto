@@ -118,7 +118,7 @@ void I_idle(struct headFile* liste,char* nomInit){
            I_delLigne(liste);
            I_redraw(liste,offset,nom);
         }
-        if(c==111) { //o on insère une ligne
+        if(c==105) { //i on insère une ligne
             I_insert(liste);
             I_redraw(liste,offset,nom);
         }
@@ -191,7 +191,7 @@ int I_help(struct headFile* liste,int offset,char* nom){
            I_redraw(liste,offset,nom);
            return stop;
         }
-        if(c==111) { //o on insère une ligne
+        if(c==105) { //i on insère une ligne
             I_cleanBas(col,lig);
             I_insert(liste);
             I_redraw(liste,offset,nom);
