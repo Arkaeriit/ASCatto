@@ -32,7 +32,6 @@ interfaceTest.o : attoInterface.h attoInterface.c attoLib.h
 
 clean :
 	rm -f *.o
-	rm -f prgMK
 	rm -f ASCattoTest
 	rm -f ASCatto
 
