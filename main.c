@@ -1,5 +1,5 @@
 #include "attoLib.h"
-#include "test.h"
+#include "attoInterface.h"
 
 
 int main(int argc,char** argv){

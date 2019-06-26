@@ -15,13 +15,15 @@ main.o : main.c attoLib.h
 interface.o : attoInterface.h attoInterface.c attoLib.h
 	gcc -c attoInterface.c $(NC) -o interface.o
 
-progTEST : attoLibTest.o mainTest.o test.o interfaceTest.o
-	gcc mainTest.o test.o attoLibTest.o interfaceTest.o $(Flags) $(NC) -o ASCattoTest
+#progTEST : attoLibTest.o mainTest.o test.o interfaceTest.o
+progTEST : attoLibTest.o mainTest.o interfaceTest.o
+	#gcc mainTest.o test.o attoLibTest.o interfaceTest.o $(Flags) $(NC) -o ASCattoTest
+	gcc mainTest.o attoLibTest.o interfaceTest.o $(Flags) $(NC) -o ASCattoTest
 
 attoLibTest.o : attoLib.c attoLib.h
 	gcc -c attoLib.c $(Flags) -o attoLibTest.o
 
-mainTest.o : main.c attoLib.h test.h
+mainTest.o : main.c attoLib.h 
 	gcc -c main.c $(Flags) -o mainTest.o
 
 test.o : test.c test.h attoLib.h attoInterface.h
