@@ -9,7 +9,7 @@ prog : attoLib.o main.o interface.o
 attoLib.o : attoLib.c attoLib.h
 	gcc -c attoLib.c -o attoLib.o
 
-main.o : main.c attoLib.h 
+main.o : main.c attoLib.h attoInterface.h
 	gcc -c main.c  $(NC) -o main.o
 
 interface.o : attoInterface.h attoInterface.c attoLib.h
@@ -23,7 +23,7 @@ progTEST : attoLibTest.o mainTest.o interfaceTest.o
 attoLibTest.o : attoLib.c attoLib.h
 	gcc -c attoLib.c $(Flags) -o attoLibTest.o
 
-mainTest.o : main.c attoLib.h 
+mainTest.o : main.c attoLib.h attoInterface.h
 	gcc -c main.c $(Flags) -o mainTest.o
 
 test.o : test.c test.h attoLib.h attoInterface.h
