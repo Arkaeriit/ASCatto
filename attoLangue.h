@@ -36,5 +36,5 @@
 #endif
 
 /* NAME_PAD est la position à laquelle le nom du fichier est écrit
- * Comme le messa ge NAME ne fait pas le même taille en fonction des langues il n'est pas toujour identique.*/
+ * Comme le message NAME ne fait pas le même taille en fonction des langues il n'est pas toujour identique.*/
 
