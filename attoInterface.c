@@ -12,22 +12,22 @@ void I_init(){
     curs_set(0);
 }
 
-void I_displayListe(struct headFile* liste,int decades,int offset){ 
+void I_displayListe(struct headFile* liste,int decades,offstruct* offset){ 
     int lig = getmaxy(stdscr);
     int max; //On ne veut pas avoir besoin d'afficher des lignes qui sont plus basse que l'écran.
-    if(lig+offset-4 > liste->nLignes) max = liste->nLignes;
-    else max = lig + offset- 4;    
-    for(int i=offset;i<=max;i++){
+    if(lig+offset->x -4 > liste->nLignes) max = liste->nLignes;
+    else max = lig + offset->x - 4;    
+    for(int i=offset->x ;i<=max;i++){
         for(int j=0;j<decades+3;j++){
-            mvprintw(i-offset,j," ");
+            mvprintw(i-offset->x ,j," ");
         }
-        mvprintw(i-offset,1,"%i",i); //Numéro de la ligne
-        mvprintw(i-offset,2+decades,"|"); //séparation
-        mvprintw(i-offset,3+decades,"%s",A_readListe(liste,i)); //ligne en elle même
+        mvprintw(i-offset->x,1,"%i",i);//Numéro de la ligne
+        mvprintw(i-offset->x,2+decades,"|"); //séparation
+        mvprintw(i-offset->x,3+decades,"%s",A_readListe(liste,i)+offset->y); //ligne en elle même
     }
 }
 
-void I_displayInputBar(int max,int decades,int offset,char* nom){
+void I_displayInputBar(int max,int decades,offstruct* offset,char* nom){
     int col;  //les 3 lignes suivantes servent à connaitre les dimention de l'écran et ainsi écrire en bas sur toute la longueur sans problèmes
     int lig;
     getmaxyx(stdscr,lig,col);
@@ -58,11 +58,11 @@ void I_displayInputBar(int max,int decades,int offset,char* nom){
     }
     mvprintw(lig-3,0,HOWTO);
     mvprintw(lig-3,NAME_PAD,nom);
-    mvprintw(lig-3,col- 2 * (2+decades)," %i/%i  ",offset,max);
+    mvprintw(lig-3,col- 2 * (2+decades)," %i/%i  ",offset->x,max);
     move(lig-1,0);
 }
 
-void I_redraw(struct headFile* liste,int offset,char* nom){
+void I_redraw(struct headFile* liste,offstruct* offset,char* nom){
     int decades=1; //Nombres de caractères à prévoir pour écrire le numéro de la ligne
     if(liste->nLignes > 9) decades++;
     if(liste->nLignes > 99) decades++;
@@ -76,19 +76,29 @@ void I_redraw(struct headFile* liste,int offset,char* nom){
 
 void I_idle(struct headFile* liste,char* nomInit){
     char* nom = malloc(sizeof(char) * 1000);
-    memcpy(nom,nomInit,strlen(nomInit));   
-    int offset = 1;
+    memcpy(nom,nomInit,strlen(nomInit));
+    offstruct* offset = malloc(sizeof(offstruct));   
+    offset->x = 1; //décalage haut/bas
+    offset->y = 0; //décalage droite/gauche
     I_redraw(liste,offset,nom);
     int stop = 0;
     while(!stop){
-        char c = getch();
+        int c = getch();
     //mvprintw(1,1,"%i",c); //test
-        if(c==65 && offset > 1){ //up  on bouge vers le début du fichier
-            offset--;
+        if(c==65 && offset->x > 1){ //up  on bouge vers le début du fichier
+            offset->x--;
             I_redraw(liste,offset,nom);
         }
-        if(c==66 && offset < liste->nLignes){ //down on bouge vers le bas du fichier
-            offset++;
+        if(c==66 && offset->x < liste->nLignes){ //down on bouge vers le bas du fichier
+            offset->x++;
+            I_redraw(liste,offset,nom);
+        }
+        if(c==67 && offset->y < 4000){ //flèche droite : on se décale
+            offset->y++;
+            I_redraw(liste,offset,nom);
+        }
+        if(c==68 && offset->y > 0){ //flèche gauche : on se décale
+            offset->y--;
             I_redraw(liste,offset,nom);
         }
         if(c==81){ //Q on arrète tout
@@ -131,9 +141,9 @@ void I_idle(struct headFile* liste,char* nomInit){
     endwin();
 }
 
-int I_help(struct headFile* liste,int offset,char* nom){
+int I_help(struct headFile* liste,offstruct* offset,char* nom){
     int HelpIligne = 0; //Permet de voir où on en est dans le menu d'aide
-    char *HelpList[6] = {HELP_QUIT,HELP_SAVE,HELP_NEW_LINE,HELP_DEL_LINE,HELP_OPEN_LINE,HELP_ARROWS};//stoque les message d'aide pour un accès facile
+    char *HelpList[7] = {HELP_QUIT,HELP_SAVE,HELP_NEW_LINE,HELP_DEL_LINE,HELP_OPEN_LINE,HELP_ARROWS,HELP_ARROWS_SIDE};//stoque les message d'aide pour un accès facile
     int lig;
     int col;
     getmaxyx(stdscr,lig,col);
@@ -143,14 +153,22 @@ int I_help(struct headFile* liste,int offset,char* nom){
         mvprintw(lig-3,0,HELP_INFO_HELP);
         mvprintw(lig-1,0,"%s",HelpList[HelpIligne]);
         refresh();
-        char c = getch();
+        int c = getch();
       //mvprintw(1,1,"%i",c); //test
-        if(c==65 && offset > 1){ //up  on bouge vers le début du fichier
-            offset--;
+        if(c==65 && offset->x > 1){ //up  on bouge vers le début du fichier
+            offset->x--;
             I_redraw(liste,offset,nom);
         }
-        if(c==66 && offset < liste->nLignes){ //down on bouge vers le bas du fichier
-            offset++;
+        if(c==66 && offset->x < liste->nLignes){ //down on bouge vers le bas du fichier
+            offset->x++;
+            I_redraw(liste,offset,nom);
+        }
+        if(c==67 && offset->y < 4000){ //flèche droite : on se décale
+            offset->y++;
+            I_redraw(liste,offset,nom);
+        }
+        if(c==68 && offset->y > 0){ //flèche gauche : on se décale
+            offset->y--;
             I_redraw(liste,offset,nom);
         }
         if(c==81){ //Q on arrète tout
@@ -199,7 +217,7 @@ int I_help(struct headFile* liste,int offset,char* nom){
         }
         if(c==10){ //On apuie sur enter pour voir le message d'aide suivant
             HelpIligne++;
-            if(HelpIligne==6) return stop;
+            if(HelpIligne==7) return stop;
         }
         if(c==27){ //on apuie sur echap pour retourner en arrière sur l'aide
             HelpIligne--;

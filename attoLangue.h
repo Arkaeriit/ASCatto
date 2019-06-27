@@ -15,6 +15,7 @@
 #define HELP_DEL_LINE "Tapez d puis le numéro de la ligne à supprimer pour supprimer une ligne."
 #define HELP_OPEN_LINE "Tapez i puis la position où vous voulez insérer une ligne pour en isérer une."
 #define HELP_ARROWS "Si le texte est trop grand pour être complètement affichable utilisez les flèches haut et bas pour naviguer dedant."
+#define HELP_ARROWS_SIDE "Si les lignes sont trop longues utilisez les flèches droite et gauche pour faire défiler le texte"
 #define HELP_INFO_HELP "Tapez Entrer pour avancer dans l'aide et echap pour reculer."
 
 #else
@@ -30,7 +31,8 @@
 #define HELP_NEW_LINE "Press n to write a new line."
 #define HELP_DEL_LINE "Press d the the number a a line to delete it."
 #define HELP_OPEN_LINE "To insert a line press i the then position where you want to insert it."
-#define HELP_ARROWS "If the file is to big too be displayed use the arrows key to navigate"
+#define HELP_ARROWS "If the file is to big too be displayed use the up and down arrows key to navigate"
+#define HELP_ARROWS_SIDE "If the lines are too long use the left and right arrows to navgate"
 #define HELP_INFO_HELP "Press Return to see the next help message, press echap to go back."
 
 #endif
