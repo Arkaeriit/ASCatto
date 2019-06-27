@@ -214,7 +214,6 @@ void I_nouvelleLigne(struct headFile* liste){
     echo();
     char* ligneN = malloc(sizeof(char) * 4096);
     getstr(ligneN);
-    strcat(ligneN,"\n"); //important pour réenregistrer ensuite
     A_writeListe(liste,liste->nLignes,ligneN);
     free(ligneN);
     noecho();
@@ -257,7 +256,6 @@ void I_editLigne(struct headFile* liste){
     mvprintw(lig-3,0,A_readListe(liste,lignE)); //On affiche l'ancienne ligne
     move(lig-1,0); //input pour le contenu de la ligne
     getstr(StrTmp);
-    strcat(StrTmp,"\n");
     A_writeListe(liste,lignE,StrTmp);
     free(StrTmp);
     noecho();
@@ -311,7 +309,6 @@ void I_insert(struct headFile* liste){
     noecho();
     curs_set(0);
     A_insertion(liste,lignE);
-    strcat(StrTmp,"\n");
     A_writeListe(liste,lignE,StrTmp);
     free(StrTmp);
 }

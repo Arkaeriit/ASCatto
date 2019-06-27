@@ -121,7 +121,7 @@ struct headFile* A_readFile(char *filename){
             while(fgets(str, 4096, fptr) != NULL){ //On essaye de lire la nouvelle ligne de fptr. Si ça ne marche pas on arrête nos bêtises mais si ça marche on la stoque dans str
                 ret->nLignes++; //Si on a réussi à lire une ligne on l'ajoute à ret
                 pnt->ligne = malloc(sizeof(char) * 4096);
-                memcpy(pnt->ligne,str,strlen(str));
+                memcpy(pnt->ligne,str,strlen(str) -1); //le -1 sert à enlever le \n
                 pnt->next = malloc(sizeof(struct ligneFile));
                 pnt = pnt->next;
             }
@@ -132,16 +132,23 @@ struct headFile* A_readFile(char *filename){
 
 int A_writeFile(struct headFile* liste, char* filename){
     FILE* fptr;
+    char* StrTmp = malloc(sizeof(char) * 5000); //On ajoute un \n à la fin des lignes donc on passe par cette chaine de caractères tampon pour ne pas salir la liste
     if( (fptr = fopen(filename,"w")) == NULL){ //on essaye de metre un pointeur vers le fichier dans fptr. Si ne marche pas on renvoie 1 pour idiquer que ça ne marche pas. Sinon on va dans le else
         return 1;
     }else{
         struct ligneFile* pnt = liste->next;
         for(int i=1;i<liste->nLignes;i++){
-            fputs( pnt->ligne,fptr ); //On écrit chaque ligne de la liste dans le fichier
+            memcpy(StrTmp,pnt->ligne,strlen(pnt->ligne)); //on stocke la ligne utile dans le tampon
+            strcat(StrTmp,"\n"); //pour réenregister on a besoin du retour chariot
+            fputs( StrTmp,fptr ); //On écrit chaque ligne de la liste dans le fichier
             pnt=pnt->next;
+            memset(StrTmp,0,5000);
         }
-        fputs( pnt->ligne,fptr );
+        memcpy(StrTmp,pnt->ligne,strlen(pnt->ligne));
+        strcat(StrTmp,"\n");
+        fputs( StrTmp,fptr );
         fclose(fptr); //On ferme le fichier
+        free(StrTmp); //On a plus besoin du tampon
     }
     return 0;
 }
