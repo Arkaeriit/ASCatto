@@ -12,8 +12,12 @@ The idea behind ASCatto is to make a text editor where there is no cursor (the u
 
 ASCatto is written in C and the interface is made with ncurses.
 
-To do :
+Recent modification :
+* You can scroll horizontally to see large lines.
+* You can print any line on the bottom of the screen.
+* You can jump to a line.
 
-* Let the user view lines larger than the terminal screen.
-* Make the line editing mode more easy to use.
-* make it easier to navigate in the text-viewing widows.
+To do :
+- [x] Let the user view lines larger than the terminal screen.
+- [ ] Make the line editing mode more easy to use.
+- [x] make it easier to navigate in the text-viewing widows.

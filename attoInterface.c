@@ -132,6 +132,13 @@ void I_idle(struct headFile* liste,char* nomInit){
             I_insert(liste);
             I_redraw(liste,offset,nom);
         }
+        if(c==112) { //p on affiche une ligne
+            I_printLigne(liste,offset,nom);
+        }
+        if(c==106){ //j on saute vers une autre ligne
+            I_jumpLigne(liste,offset);
+            I_redraw(liste,offset,nom);
+        }
         if(c==104) { //h on affiche l'aide
             stop = I_help(liste,offset,nom);
             I_redraw(liste,offset,nom);
@@ -143,7 +150,7 @@ void I_idle(struct headFile* liste,char* nomInit){
 
 int I_help(struct headFile* liste,offstruct* offset,char* nom){
     int HelpIligne = 0; //Permet de voir où on en est dans le menu d'aide
-    char *HelpList[7] = {HELP_QUIT,HELP_SAVE,HELP_NEW_LINE,HELP_DEL_LINE,HELP_OPEN_LINE,HELP_ARROWS,HELP_ARROWS_SIDE};//stoque les message d'aide pour un accès facile
+    char *HelpList[9] = {HELP_QUIT,HELP_SAVE,HELP_NEW_LINE,HELP_DEL_LINE,HELP_OPEN_LINE,HELP_PRINT,HELP_JUMP,HELP_ARROWS,HELP_ARROWS_SIDE};//stoque les message d'aide pour un accès facile
     int lig;
     int col;
     getmaxyx(stdscr,lig,col);
@@ -215,9 +222,16 @@ int I_help(struct headFile* liste,offstruct* offset,char* nom){
             I_redraw(liste,offset,nom);
             return stop;
         }
+        if(c==112) { //p on affiche une ligne
+            I_printLigne(liste,offset,nom);
+        }
+        if(c==106){ //j on saute vers une autre ligne
+            I_jumpLigne(liste,offset);
+            I_redraw(liste,offset,nom);
+        }
         if(c==10){ //On apuie sur enter pour voir le message d'aide suivant
             HelpIligne++;
-            if(HelpIligne==7) return stop;
+            if(HelpIligne==9) return stop;
         }
         if(c==27){ //on apuie sur echap pour retourner en arrière sur l'aide
             HelpIligne--;
@@ -226,6 +240,51 @@ int I_help(struct headFile* liste,offstruct* offset,char* nom){
     }
     return 0; //Si au cas où on arrive là (normalement impossible) on errète pas le programme.
 }
+
+void I_printLigne(struct headFile* liste,offstruct* offset,char* nom){
+    int lignE = -1; //numero de la ligne à afficher
+    int col;
+    int lig;
+    getmaxyx(stdscr,lig,col);
+    echo();
+    curs_set(1);
+    I_cleanBas(col,lig);
+    refresh();
+    char* StrTmp = malloc(sizeof(char) * 4000); //sert à strocker l'input pour ne numéro de la ligne
+    while(lignE < 1 || lignE > liste->nLignes){
+        mvprintw(lig-3,0,PRINT);
+        move(lig-1,0); 
+        getstr(StrTmp);
+        if(strcmp(StrTmp,"") == 0){ I_cleanBas(col,lig); return;}
+        lignE = atoi(StrTmp);
+        I_cleanBas(col,lig);
+    }
+    mvprintw(lig-1,0,A_readListe(liste,lignE)); //On affiche la ligne
+    return;
+}
+
+void I_jumpLigne(struct headFile* liste,offstruct* offset){
+    int lignE = -1; //numero de la ligne à atteindre
+    int col;
+    int lig;
+    getmaxyx(stdscr,lig,col);
+    echo();
+    curs_set(1);
+    I_cleanBas(col,lig);
+    refresh();
+    char* StrTmp = malloc(sizeof(char) * 4000); //sert à strocker l'input pour ne numéro de la ligne
+    while(lignE < 1 || lignE > liste->nLignes){
+        mvprintw(lig-3,0,JUMP);
+        move(lig-1,0); 
+        getstr(StrTmp);
+        if(strcmp(StrTmp,"") == 0) return;
+        lignE = atoi(StrTmp);
+        I_cleanBas(col,lig);
+    }
+    offset->x = lignE;
+    return;
+}
+
 void I_nouvelleLigne(struct headFile* liste){
     A_append(liste);
     curs_set(1);
