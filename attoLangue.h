@@ -18,7 +18,7 @@
 #define HELP_OPEN_LINE "Tapez i puis la position où vous voulez insérer une ligne pour en isérer une."
 #define HELP_ARROWS "Si le texte est trop grand pour être complètement affichable utilisez les flèches haut et bas pour naviguer dedant."
 #define HELP_ARROWS_SIDE "Si les lignes sont trop longues utilisez les flèches droite et gauche pour faire défiler le texte"
-#define HELP_INFO_HELP "Tapez Entrer pour avancer dans l'aide et echap pour reculer."
+#define HELP_INFO_HELP "Tapez Entrer pour avancer dans l'aide et backspace pour reculer."
 #define HELP_JUMP "Pour vous rendre à une ligne tapez j puis le numéro de la ligne"
 #define HELP_PRINT "Pour afficher une ligne toute seule tapez p puis le numéro de la ligne."
 
@@ -39,7 +39,7 @@
 #define HELP_OPEN_LINE "To insert a line press i the then position where you want to insert it."
 #define HELP_ARROWS "If the file is to big too be displayed use the up and down arrows key to navigate"
 #define HELP_ARROWS_SIDE "If the lines are too long use the left and right arrows to navgate"
-#define HELP_INFO_HELP "Press Return to see the next help message, press echap to go back."
+#define HELP_INFO_HELP "Press Return to see the next help message, press backspace to go back."
 #define HELP_JUMP "To go to any line press j then the nuber of the line."
 #define HELP_PRINT "To print any line on the bottom of the screen press p then the number of the line."
 

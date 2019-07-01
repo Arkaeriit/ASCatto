@@ -161,7 +161,7 @@ int I_help(struct headFile* liste,offstruct* offset,char* nom){
         mvprintw(lig-1,0,"%s",HelpList[HelpIligne]);
         refresh();
         int c = getch();
-      //mvprintw(1,1,"%i",c); //test
+    //mvprintw(1,1,"%i",c); //test
         if(c==65 && offset->x > 1){ //up  on bouge vers le début du fichier
             offset->x--;
             I_redraw(liste,offset,nom);
@@ -233,7 +233,7 @@ int I_help(struct headFile* liste,offstruct* offset,char* nom){
             HelpIligne++;
             if(HelpIligne==9) return stop;
         }
-        if(c==27){ //on apuie sur echap pour retourner en arrière sur l'aide
+        if(c==127){ //on apuie sur echap pour retourner en arrière sur l'aide
             HelpIligne--;
             if(HelpIligne<0) return stop;
         }
