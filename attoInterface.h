@@ -1,5 +1,6 @@
 #include "attoLib.h"
 #include <ncurses.h>
+#include "attoInput.h"
 
 #ifndef OFFSET_STRUCT
 #define OFFSET_STRUCT

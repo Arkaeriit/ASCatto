@@ -332,8 +332,7 @@ void I_editLigne(struct headFile* liste){
     }
     mvprintw(lig-3,0,A_readListe(liste,lignE)); //On affiche l'ancienne ligne
     move(lig-1,0); //input pour le contenu de la ligne
-    getstr(StrTmp);
-    A_writeListe(liste,lignE,StrTmp);
+    editString(A_readListe(liste,lignE),4090,lig-1,0,col); 
     free(StrTmp);
     noecho();
     curs_set(0);

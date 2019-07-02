@@ -3,8 +3,8 @@ NC = -lncurses
 
 all : clean prog
 
-prog : attoLib.o main.o interface.o
-	gcc main.o attoLib.o interface.o -Wall -Werror $(NC) -o ASCatto
+prog : attoLib.o main.o interface.o attoInput.o
+	gcc main.o attoLib.o interface.o attoInput.o -Wall -Werror $(NC) -o ASCatto
 
 attoLib.o : attoLib.c attoLib.h
 	gcc -c attoLib.c -o attoLib.o
@@ -15,10 +15,13 @@ main.o : main.c attoLib.h attoInterface.h
 interface.o : attoInterface.h attoInterface.c attoLib.h
 	gcc -c attoInterface.c $(NC) -o interface.o
 
+attoInput.o : attoInput.c attoInput.h
+	gcc -c attoInput.c $(NC) -o attoInput.o
+
 #progTEST : attoLibTest.o mainTest.o test.o interfaceTest.o
-progTEST : attoLibTest.o mainTest.o interfaceTest.o
+progTEST : attoLibTest.o mainTest.o interfaceTest.o inputTest.o
 	#gcc mainTest.o test.o attoLibTest.o interfaceTest.o $(Flags) $(NC) -o ASCattoTest
-	gcc mainTest.o attoLibTest.o interfaceTest.o $(Flags) $(NC) -o ASCattoTest
+	gcc mainTest.o attoLibTest.o interfaceTest.o inputTest.o $(Flags) $(NC) -o ASCattoTest
 
 attoLibTest.o : attoLib.c attoLib.h
 	gcc -c attoLib.c $(Flags) -o attoLibTest.o
@@ -31,6 +34,9 @@ test.o : test.c test.h attoLib.h attoInterface.h
 
 interfaceTest.o : attoInterface.h attoInterface.c attoLib.h
 	gcc -c attoInterface.c $(Flags) $(NC) -o interfaceTest.o
+
+inputTest.o : attoInput.c attoInput.h
+	gcc -c attoInput.c $(Flags) $(NC) -o inputTest.o
 
 clean :
 	rm -f *.o
