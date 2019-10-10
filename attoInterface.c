@@ -288,15 +288,14 @@ void I_jumpLigne(struct headFile* liste,offstruct* offset){
 }
 
 void I_nouvelleLigne(struct headFile* liste){
-    A_append(liste);
-    curs_set(1);
-    echo();
-    char* ligneN = malloc(sizeof(char) * 4096);
-    getstr(ligneN);
+    positionEdit pos = AT_autopos(4096);
+
+    A_append(liste); //traitement
+    //char* ligneN = malloc(sizeof(char) * 4096);
+    char* ligneN = "Bobignou";
+    AT_edit(ligneN,pos);
     A_writeListe(liste,liste->nLignes,ligneN);
-    free(ligneN);
-    noecho();
-    curs_set(0);
+    //free(ligneN);
 }
 
 void I_rename(char* nom){ //TODO : changer la manière dont la mémoire pour le nom est allouée pour pouvoir éviter de générer des array en boucle

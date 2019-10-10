@@ -1,4 +1,5 @@
 #include "attoLib.h"
+#include "attoType.h"
 #include <ncurses.h>
 #include <locale.h>
 
