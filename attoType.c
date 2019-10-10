@@ -1,7 +1,9 @@
 #include "attoType.h"
 
-void AT_edit(char* texte,positionEdit position){
+void AT_edit(char* texteOrigine,positionEdit position){
     curs_set(1);
+    char* texte = malloc(sizeof(char) * position.tailleMax); //On travaille sur une copie de l'origine
+    strcpy(texte,texteOrigine);
     int positionCurseur = strlen(texte);
     int c = 0;
     while(c != 10){
@@ -24,12 +26,18 @@ void AT_edit(char* texte,positionEdit position){
             case KEY_DC :
                 AT_delChar(texte,positionCurseur);
                 break;
+            case 10 : //On apuie sur enter donc on enregistre
+                strcpy(texteOrigine,texte);
+                break;
+            case 360 : //On abandonne l'édition avec la touche "fin"
+                c = 10;
             default :
                 if(AT_insertChar(texte,(char) c,position,positionCurseur))
                     positionCurseur++;
         }
     }
 
+    free(texte);
     curs_set(0);
 }
 
@@ -47,7 +55,6 @@ void AT_showEdit(char* texte,positionEdit position,int positionCurseur){
         *(tmp + position.taille) = 0;
         debut = 0;
     }
-    mvprintw(3,3,"%i",position.x + positionCurseur - debut);
     mvprintw(position.y,position.x,"%s",tmp);
     move(position.y,position.x + positionCurseur - debut);
     refresh();
