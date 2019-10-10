@@ -4,6 +4,8 @@
 void I_init(){
     initscr();
     noecho();
+    keypad(stdscr, TRUE);
+    setlocale(LC_ALL,"");
     if(has_colors()){
         start_color();
         init_pair(1,COLOR_WHITE,COLOR_BLACK); //les deux lignes suivantes servent à initialiser les thèmes
@@ -85,30 +87,30 @@ void I_idle(struct headFile* liste,char* nomInit){
     while(!stop){
         int c = getch();
     //mvprintw(1,1,"%i",c); //test
-        if(c==65 && offset->x > 1){ //up  on bouge vers le début du fichier
+        if(c==KEY_UP && offset->x > 1){ //up  on bouge vers le début du fichier
             offset->x--;
             I_redraw(liste,offset,nom);
         }
-        if(c==66 && offset->x < liste->nLignes){ //down on bouge vers le bas du fichier
+        if(c==KEY_DOWN && offset->x < liste->nLignes){ //down on bouge vers le bas du fichier
             offset->x++;
             I_redraw(liste,offset,nom);
         }
-        if(c==67 && offset->y < 4000){ //flèche droite : on se décale
+        if(c==KEY_RIGHT && offset->y < 4000){ //flèche droite : on se décale
             offset->y++;
             I_redraw(liste,offset,nom);
         }
-        if(c==68 && offset->y > 0){ //flèche gauche : on se décale
+        if(c==KEY_LEFT && offset->y > 0){ //flèche gauche : on se décale
             offset->y--;
             I_redraw(liste,offset,nom);
         }
-        if(c==81){ //Q on arrète tout
+        if(c=='Q'){ //Q on arrète tout
             stop=1;
         }
-        if(c==110){ //n on écrit une nouvelle ligne
+        if(c=='n'){ //n on écrit une nouvelle ligne
             I_nouvelleLigne(liste);
             I_redraw(liste,offset,nom);
         }
-        if(c==115){ //s on sauvegarde
+        if(c=='s'){ //s on sauvegarde
             if(strcmp(nom,"")==0){
                 I_rename(nom);
                 I_redraw(liste,offset,nom);
@@ -120,26 +122,26 @@ void I_idle(struct headFile* liste,char* nomInit){
             }
             I_redraw(liste,offset,nom);
         }
-        if(c==101){ //e on change une ligne
+        if(c=='e'){ //e on change une ligne
             I_editLigne(liste);
             I_redraw(liste,offset,nom);
         }
-        if(c==100){ //d on supprime une ligne
+        if(c=='d'){ //d on supprime une ligne
            I_delLigne(liste);
            I_redraw(liste,offset,nom);
         }
-        if(c==105) { //i on insère une ligne
+        if(c=='i') { //i on insère une ligne
             I_insert(liste);
             I_redraw(liste,offset,nom);
         }
-        if(c==112) { //p on affiche une ligne
+        if(c=='p') { //p on affiche une ligne
             I_printLigne(liste,offset,nom);
         }
-        if(c==106){ //j on saute vers une autre ligne
+        if(c=='j'){ //j on saute vers une autre ligne
             I_jumpLigne(liste,offset);
             I_redraw(liste,offset,nom);
         }
-        if(c==104) { //h on affiche l'aide
+        if(c=='h') { //h on affiche l'aide
             stop = I_help(liste,offset,nom);
             I_redraw(liste,offset,nom);
         } 
@@ -162,34 +164,34 @@ int I_help(struct headFile* liste,offstruct* offset,char* nom){
         refresh();
         int c = getch();
     //mvprintw(1,1,"%i",c); //test
-        if(c==65 && offset->x > 1){ //up  on bouge vers le début du fichier
+        if(c==KEY_UP && offset->x > 1){ //up  on bouge vers le début du fichier
             offset->x--;
             I_redraw(liste,offset,nom);
         }
-        if(c==66 && offset->x < liste->nLignes){ //down on bouge vers le bas du fichier
+        if(c==KEY_DOWN && offset->x < liste->nLignes){ //down on bouge vers le bas du fichier
             offset->x++;
             I_redraw(liste,offset,nom);
         }
-        if(c==67 && offset->y < 4000){ //flèche droite : on se décale
+        if(c==KEY_RIGHT && offset->y < 4000){ //flèche droite : on se décale
             offset->y++;
             I_redraw(liste,offset,nom);
         }
-        if(c==68 && offset->y > 0){ //flèche gauche : on se décale
+        if(c==KEY_LEFT && offset->y > 0){ //flèche gauche : on se décale
             offset->y--;
             I_redraw(liste,offset,nom);
         }
-        if(c==81){ //Q on arrète tout
+        if(c=='Q'){ //Q on arrète tout
             stop=1;
             return stop;
         }
-        if(c==110){ //n on écrit une nouvelle ligne
+        if(c=='n'){ //n on écrit une nouvelle ligne
             I_cleanBas(col,lig);
             move(lig-1,0);
             I_nouvelleLigne(liste);
             I_redraw(liste,offset,nom);
             return stop;
         }
-        if(c==115){ //s on sauvegarde
+        if(c=='s'){ //s on sauvegarde
             I_cleanBas(col,lig);
             move(lig-1,0);
             if(strcmp(nom,"")==0){
@@ -204,28 +206,28 @@ int I_help(struct headFile* liste,offstruct* offset,char* nom){
             I_redraw(liste,offset,nom);
             return stop;
         }
-        if(c==101){ //e on change une ligne
+        if(c=='e'){ //e on change une ligne
             I_cleanBas(col,lig);
             I_editLigne(liste);
             I_redraw(liste,offset,nom);
             return stop;
         }
-        if(c==100){ //d on supprime une ligne
+        if(c=='d'){ //d on supprime une ligne
             I_cleanBas(col,lig);
            I_delLigne(liste);
            I_redraw(liste,offset,nom);
            return stop;
         }
-        if(c==105) { //i on insère une ligne
+        if(c=='i') { //i on insère une ligne
             I_cleanBas(col,lig);
             I_insert(liste);
             I_redraw(liste,offset,nom);
             return stop;
         }
-        if(c==112) { //p on affiche une ligne
+        if(c=='p') { //p on affiche une ligne
             I_printLigne(liste,offset,nom);
         }
-        if(c==106){ //j on saute vers une autre ligne
+        if(c=='j'){ //j on saute vers une autre ligne
             I_jumpLigne(liste,offset);
             I_redraw(liste,offset,nom);
         }
@@ -233,7 +235,7 @@ int I_help(struct headFile* liste,offstruct* offset,char* nom){
             HelpIligne++;
             if(HelpIligne==9) return stop;
         }
-        if(c==127){ //on apuie sur echap pour retourner en arrière sur l'aide
+        if(c==KEY_BACKSPACE){ //on apuie sur backspace pour retourner en arrière sur l'aide
             HelpIligne--;
             if(HelpIligne<0) return stop;
         }
