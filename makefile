@@ -5,7 +5,7 @@ NC = -lncurses
 all : clean prog
 
 prog : attoLib.o main.o interface.o attoType.o
-	gcc main.o attoLib.o interface.o attoType.o $(Flags) $(NC) -o ASCatto
+	gcc main.o attoLib.o interface.o attoType.o $(NC) -o ASCatto
 
 attoLib.o : attoLib.c attoLib.h
 	gcc -c attoLib.c $(Flags) -o attoLib.o

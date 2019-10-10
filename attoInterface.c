@@ -291,11 +291,10 @@ void I_nouvelleLigne(struct headFile* liste){
     positionEdit pos = AT_autopos(4096);
 
     A_append(liste); //traitement
-    //char* ligneN = malloc(sizeof(char) * 4096);
-    char* ligneN = "Bobignou";
+    char* ligneN = malloc(sizeof(char) * 4096);
     AT_edit(ligneN,pos);
     A_writeListe(liste,liste->nLignes,ligneN);
-    //free(ligneN);
+    free(ligneN);
 }
 
 void I_rename(char* nom){ //TODO : changer la manière dont la mémoire pour le nom est allouée pour pouvoir éviter de générer des array en boucle

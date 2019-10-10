@@ -2,14 +2,34 @@
 
 void AT_edit(char* texte,positionEdit position){
     curs_set(1);
-    echo();
     int positionCurseur = strlen(texte);
-    AT_showEdit(texte,position,positionCurseur); 
-    getch();
+    int c = 0;
+    while(c != 10){
+        AT_showEdit(texte,position,positionCurseur); 
+        c = getch();
+        switch(c){
+            case KEY_LEFT :
+                if(positionCurseur > 0)
+                    positionCurseur--;
+                break;
+            case KEY_RIGHT :
+                if(positionCurseur < strlen(texte))
+                    positionCurseur++;
+                break;
+            case KEY_BACKSPACE :
+                AT_delChar(texte,positionCurseur - 1);
+                if(positionCurseur > 0)
+                    positionCurseur--;
+                break;
+            case KEY_DC :
+                AT_delChar(texte,positionCurseur);
+                break;
+            default :
+                if(AT_insertChar(texte,(char) c,position,positionCurseur))
+                    positionCurseur++;
+        }
+    }
 
-
-
-    noecho();
     curs_set(0);
 }
 
@@ -25,9 +45,11 @@ void AT_showEdit(char* texte,positionEdit position,int positionCurseur){
     }else{ //On peut afficher toute la chaine
         strcpy(tmp,texte);
         *(tmp + position.taille) = 0;
+        debut = 0;
     }
-    mvprintw(3,3,"%s",tmp);
+    mvprintw(3,3,"%i",position.x + positionCurseur - debut);
     mvprintw(position.y,position.x,"%s",tmp);
+    move(position.y,position.x + positionCurseur - debut);
     refresh();
     free(tmp);
 }
@@ -43,3 +65,25 @@ positionEdit AT_autopos(int tailleMax){
     ret.tailleMax = tailleMax;
     return ret;
 }
+
+void AT_delChar(char* texte,int positionCurseur){
+    if(positionCurseur >= 0 && positionCurseur < strlen(texte)){ //On vérifie que la commande est valide
+        for(int i = positionCurseur; i < strlen(texte); i++){
+            char* pos = (texte + i);
+            char new = *(texte+i+1);
+            *(pos) = new;
+        }
+    }
+}
+
+int AT_insertChar(char* texte,char elem,positionEdit position,int positionCurseur){
+    if(strlen(texte) < position.tailleMax){
+        for(int i = strlen(texte); i > positionCurseur;i--)
+            *(texte + i) = *(texte + i - 1);
+        *(texte+positionCurseur) = elem;
+        return 1;
+    }else{
+        return 0;
+    }
+}
+
