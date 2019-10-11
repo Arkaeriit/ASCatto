@@ -3,6 +3,7 @@ interface.o
 main.o
 test.o
 test.c
+attoType.o
 prgMK
 notes
 ASCattoTest
