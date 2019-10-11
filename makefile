@@ -23,7 +23,7 @@ clean :
 	rm -f *.o
 	rm -f ASCatto
 
-installl : 
+install : 
 	cp -f ASCatto /usr/local/bin
 
 unistall :
