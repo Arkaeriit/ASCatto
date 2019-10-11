@@ -291,7 +291,10 @@ void I_nouvelleLigne(struct headFile* liste){
     positionEdit pos = AT_autopos(4096);
 
     A_append(liste); //traitement
+    I_cleanBas(pos.taille +1,pos.y +1);
+    mvprintw(pos.y -2,pos.x,LINE_TYPE);
     char* ligneN = malloc(sizeof(char) * 4096);
+    memset(ligneN,0,4096);
     AT_edit(ligneN,pos);
     A_writeListe(liste,liste->nLignes,ligneN);
     free(ligneN);
@@ -314,28 +317,26 @@ void I_rename(char* nom){ //TODO : changer la manière dont la mémoire pour le 
 
 void I_editLigne(struct headFile* liste){
     int lignE = -1; //numero de la ligne à éditer
-    int col;
-    int lig;
-    getmaxyx(stdscr,lig,col);
+    positionEdit pos = AT_autopos(4096);
+    
     echo();
     curs_set(1);
-    I_cleanBas(col,lig);
+    I_cleanBas(pos.taille + 1,pos.y +1);
     refresh();
-    char* StrTmp = malloc(sizeof(char) * 4000); //sert d'abord à strocher l'input pour ne numéro de la ligne puis l'input pour le contine
+    char* StrTmp = malloc(sizeof(char) * 4096); //sert d'abord à strocher l'input pour ne numéro de la ligne
+    memset(StrTmp,0,4096);
     while(lignE < 1 || lignE > liste->nLignes){
-        mvprintw(lig-3,0,EDIT);
-        move(lig-1,0); 
+        mvprintw(pos.y - 2,0,EDIT);
+        move(pos.y+1,0); 
         getstr(StrTmp);
         if(strcmp(StrTmp,"") == 0) return;
         lignE = atoi(StrTmp);
-        I_cleanBas(col,lig);
+        I_cleanBas(pos.taille +1,pos.y +1);
     }
-    mvprintw(lig-3,0,A_readListe(liste,lignE)); //On affiche l'ancienne ligne
-    move(lig-1,0); //input pour le contenu de la ligne
-    getstr(StrTmp);
-    A_writeListe(liste,lignE,StrTmp);
-    free(StrTmp);
     noecho();
+    mvprintw(pos.y - 2,0,A_readListe(liste,lignE)); //On affiche l'ancienne ligne
+    AT_edit(A_readListe(liste,lignE),pos);
+    free(StrTmp);
     curs_set(0);
 }
 
@@ -364,27 +365,28 @@ void I_delLigne(struct headFile* liste){
 }
 
 void I_insert(struct headFile* liste){
+    positionEdit pos = AT_autopos(4096);
     int lignE = -1; //position de la ligne à insérer
-    int col;
-    int lig;
-    getmaxyx(stdscr,lig,col);
     echo();
     curs_set(1);
-    I_cleanBas(col,lig);
+    I_cleanBas(pos.y+1,pos.taille+1);
     refresh();
-    char* StrTmp = malloc(sizeof(char) * 4000); //sert d'abord à strocher l'input pour ne numéro de la ligne puis l'input pour le contine
+    char* StrTmp = malloc(sizeof(char) * 4096); //sert d'abord à strocher l'input pour ne numéro de la ligne puis l'input pour le contine
+    memset(StrTmp,0,4096);
     while(lignE < 1 || lignE > liste->nLignes){
-        mvprintw(lig-3,0,INSERT);
-        move(lig-1,0); 
+        mvprintw(pos.y-2,0,INSERT);
+        move(pos.y,0); 
         getstr(StrTmp);
         if(strcmp(StrTmp,"") == 0) return;
         lignE = atoi(StrTmp);
-        I_cleanBas(col,lig); 
+        I_cleanBas(pos.taille +1,pos.y +1); 
     }
-    move(lig-1,0);
-    getstr(StrTmp);
+    I_cleanBas(pos.taille +1,pos.y +1); 
+    mvprintw(pos.y-2,0,LINE_TYPE);
+    memset(StrTmp,0,4096);
     noecho();
     curs_set(0);
+    AT_edit(StrTmp,pos);
     A_insertion(liste,lignE);
     A_writeListe(liste,lignE,StrTmp);
     free(StrTmp);

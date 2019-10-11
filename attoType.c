@@ -3,6 +3,7 @@
 void AT_edit(char* texteOrigine,positionEdit position){
     curs_set(1);
     char* texte = malloc(sizeof(char) * position.tailleMax); //On travaille sur une copie de l'origine
+    memset(texte,0,position.tailleMax);
     strcpy(texte,texteOrigine);
     int positionCurseur = strlen(texte);
     int c = 0;
@@ -84,7 +85,7 @@ void AT_delChar(char* texte,int positionCurseur){
 }
 
 int AT_insertChar(char* texte,char elem,positionEdit position,int positionCurseur){
-    if(strlen(texte) < position.tailleMax){
+    if(strlen(texte) < position.tailleMax && elem >= 32 && elem <= 126 ){ // On regarde si il reste de la place et si le cccharacère que l'on veut est effectivement un caractère
         for(int i = strlen(texte); i > positionCurseur;i--)
             *(texte + i) = *(texte + i - 1);
         *(texte+positionCurseur) = elem;
