@@ -27,6 +27,12 @@ void AT_edit(char* texteOrigine,positionEdit position){
             case KEY_DC :
                 AT_delChar(texte,positionCurseur);
                 break;
+            case 9: //tab
+                for(int i = 0;i<4;i++){
+                    if(AT_insertChar(texte,' ',position,positionCurseur))
+                        positionCurseur++;
+                }
+                break;
             case 10 : //On apuie sur enter donc on enregistre
                 strcpy(texteOrigine,texte);
                 break;
@@ -85,7 +91,7 @@ void AT_delChar(char* texte,int positionCurseur){
 }
 
 int AT_insertChar(char* texte,char elem,positionEdit position,int positionCurseur){
-    if(strlen(texte) < position.tailleMax && elem >= 32 && elem <= 126 ){ // On regarde si il reste de la place et si le cccharacère que l'on veut est effectivement un caractère
+    if(strlen(texte) < position.tailleMax && elem >= 32 && elem <= 126){ // On regarde si il reste de la place et si le cccharacère que l'on veut est effectivement un caractère
         for(int i = strlen(texte); i > positionCurseur;i--)
             *(texte + i) = *(texte + i - 1);
         *(texte+positionCurseur) = elem;

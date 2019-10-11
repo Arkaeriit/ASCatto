@@ -17,8 +17,10 @@ Recent modification:
 * You can scroll horizontally to see large lines.
 * You can print any line on the bottom of the screen.
 * You can jump to a line.
+* Editing lines has been improved
 
 To do:
 - [x] Let the user view lines larger than the terminal screen.
-- [ ] Make the line editing mode more easy to use.
-- [x] make it easier to navigate in the text-viewing widows.
+- [x] Make the line editing mode more easy to use.
+- [x] Make it easier to navigate in the text-viewing widows.
+- [ ] Handle non-ASCII characters.

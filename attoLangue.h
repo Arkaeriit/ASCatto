@@ -9,7 +9,7 @@
 #define EDIT "Ligne à éditer :     "
 #define DEL "Ligne à supprimer."
 #define INSERT "Position de la nouvelle ligne."
-#define LINE_TYPE "Écrivez la nouvelle ligne."
+#define LINE_TYPE "Tapez la nouvelle ligne."
 #define JUMP "Position de la destination."
 #define PRINT "Ligne à afficher."
 #define HELP_QUIT "Tapez Q pour quiter."

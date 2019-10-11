@@ -369,13 +369,13 @@ void I_insert(struct headFile* liste){
     int lignE = -1; //position de la ligne à insérer
     echo();
     curs_set(1);
-    I_cleanBas(pos.y+1,pos.taille+1);
-    refresh();
+    I_cleanBas(pos.taille +1,pos.y +1);
     char* StrTmp = malloc(sizeof(char) * 4096); //sert d'abord à strocher l'input pour ne numéro de la ligne puis l'input pour le contine
     memset(StrTmp,0,4096);
     while(lignE < 1 || lignE > liste->nLignes){
         mvprintw(pos.y-2,0,INSERT);
         move(pos.y,0); 
+        refresh();
         getstr(StrTmp);
         if(strcmp(StrTmp,"") == 0) return;
         lignE = atoi(StrTmp);
