@@ -1,5 +1,5 @@
-#Flags = -Wall -g -Werror
-Flags = -Wall -Werror
+Flags = -Wall -g -Werror
+#Flags = -Wall -Werror
 NC = -lncurses
 
 all : ASCatto 

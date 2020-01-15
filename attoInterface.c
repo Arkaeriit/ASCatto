@@ -20,6 +20,8 @@ void I_displayListe(struct headFile* liste,int decades,offstruct* offset){
     int max; //On ne veut pas avoir besoin d'afficher des lignes qui sont plus basse que l'écran.
     if(lig+offset->x -4 > liste->nLignes) max = liste->nLignes;
     else max = lig + offset->x - 4;    
+    if(max == 0) return; //Nothing to do
+    if(offset->x == 0) offset->x = 1; //On empèche d'accéder à des zones impossibles
     char* tmp = malloc(sizeof(char) * 4096);
     for(int i=offset->x ;i<=max;i++){
         for(int j=0;j<decades+3;j++){
@@ -35,7 +37,7 @@ void I_displayListe(struct headFile* liste,int decades,offstruct* offset){
     free(tmp);
 }
 
-void I_displayInputBar(int max,int decades,offstruct* offset,char* nom){
+void I_displayInputBar(int max,int decades,const offstruct* offset,const char* nom){
     int col;  //les 3 lignes suivantes servent à connaitre les dimention de l'écran et ainsi écrire en bas sur toute la longueur sans problèmes
     int lig;
     getmaxyx(stdscr,lig,col);
@@ -70,7 +72,7 @@ void I_displayInputBar(int max,int decades,offstruct* offset,char* nom){
     move(lig-1,0);
 }
 
-void I_redraw(struct headFile* liste,offstruct* offset,char* nom){
+void I_redraw(struct headFile* liste,offstruct* offset,const char* nom){
     int decades=1; //Nombres de caractères à prévoir pour écrire le numéro de la ligne
     if(liste->nLignes > 9) decades++;
     if(liste->nLignes > 99) decades++;
@@ -82,13 +84,13 @@ void I_redraw(struct headFile* liste,offstruct* offset,char* nom){
     refresh();
 }
 
-void I_idle(struct headFile* liste,char* nomInit){
+void I_idle(struct headFile* liste,const char* nomInit){
     bool isHelp = false;
     int HelpLigne = 0; //Permet de voir où on en est dans le menu d'aide
     char *HelpList[9] = {HELP_QUIT,HELP_SAVE,HELP_NEW_LINE,HELP_DEL_LINE,HELP_OPEN_LINE,HELP_PRINT,HELP_JUMP,HELP_ARROWS,HELP_ARROWS_SIDE};//stoque les message
     
-    char* nom = malloc(sizeof(char) * 1000);
-    memcpy(nom,nomInit,strlen(nomInit));
+    char* nom = malloc(sizeof(char) * 1024);
+    strcpy(nom,nomInit);
     offstruct* offset = malloc(sizeof(offstruct));   
     offset->x = 1; //décalage haut/bas
     offset->y = 0; //décalage droite/gauche
@@ -187,58 +189,21 @@ void I_idle(struct headFile* liste,char* nomInit){
 }
 
 void I_printLigne(struct headFile* liste,offstruct* offset,char* nom){
-    int lignE = -1; //numero de la ligne à afficher
-    int col;
-    int lig;
-    getmaxyx(stdscr,lig,col);
-    echo();
-    curs_set(1);
-    I_cleanBas(col,lig);
-    refresh();
-    char* StrTmp = malloc(sizeof(char) * 4000); //sert à strocker l'input pour ne numéro de la ligne
-    while(lignE < 1 || lignE > liste->nLignes){
-        mvprintw(lig-3,0,PRINT);
-        move(lig-1,0); 
-        getstr(StrTmp);
-        if(strcmp(StrTmp,"") == 0){ I_cleanBas(col,lig); return;}
-        lignE = atoi(StrTmp);
-        I_cleanBas(col,lig);
-    }
+    int lig = getmaxy(stdscr);
+    int lignE = I_askLine(liste, PRINT);
+    if(lignE == -1) return;
     mvprintw(lig-1,0,A_readListe(liste,lignE)); //On affiche la ligne
-    return;
 }
 
 void I_jumpLigne(struct headFile* liste,offstruct* offset){
-    int lignE = -1; //numero de la ligne à atteindre
-    int col;
-    int lig;
-    getmaxyx(stdscr,lig,col);
-    echo();
-    curs_set(1);
-    I_cleanBas(col,lig);
-    refresh();
-    char* StrTmp = malloc(sizeof(char) * 4000); //sert à strocker l'input pour ne numéro de la ligne
-    while(lignE < 1 || lignE > liste->nLignes){
-        mvprintw(lig-3,0,JUMP);
-        move(lig-1,0); 
-        getstr(StrTmp);
-        if(strcmp(StrTmp,"") == 0) return;
-        lignE = atoi(StrTmp);
-        I_cleanBas(col,lig);
-    }
+    int lignE = I_askLine(liste, JUMP);
+    if(lignE == -1) return;
     offset->x = lignE;
-    return;
 }
 
 void I_nouvelleLigne(struct headFile* liste){
-    positionEdit pos = AT_autopos(4096);
-
+    char* ligneN = I_askTxt(LINE_TYPE);
     A_append(liste); //traitement
-    I_cleanBas(pos.taille +1,pos.y +1);
-    mvprintw(pos.y -2,pos.x,LINE_TYPE);
-    char* ligneN = malloc(sizeof(char) * 4096);
-    memset(ligneN,0,4096);
-    AT_edit(ligneN,pos);
     A_writeListe(liste,liste->nLignes,ligneN);
     free(ligneN);
 }
@@ -259,80 +224,25 @@ void I_rename(char* nom){ //TODO : changer la manière dont la mémoire pour le 
 }
 
 void I_editLigne(struct headFile* liste){
-    int lignE = -1; //numero de la ligne à éditer
     positionEdit pos = AT_autopos(4096);
-    
-    echo();
-    curs_set(1);
-    I_cleanBas(pos.taille + 1,pos.y +1);
-    refresh();
-    char* StrTmp = malloc(sizeof(char) * 4096); //sert d'abord à strocher l'input pour ne numéro de la ligne
-    memset(StrTmp,0,4096);
-    while(lignE < 1 || lignE > liste->nLignes){
-        mvprintw(pos.y - 2,0,EDIT);
-        move(pos.y+1,0); 
-        getstr(StrTmp);
-        if(strcmp(StrTmp,"") == 0) return;
-        lignE = atoi(StrTmp);
-        I_cleanBas(pos.taille +1,pos.y +1);
-    }
-    noecho();
-    mvprintw(pos.y - 2,0,A_readListe(liste,lignE)); //On affiche l'ancienne ligne
+    int lignE = I_askLine(liste, EDIT); //numero de la ligne à éditer
+    if(lignE == -1) return;
     AT_edit(A_readListe(liste,lignE),pos);
-    free(StrTmp);
-    curs_set(0);
 }
 
 void I_delLigne(struct headFile* liste){
-    int lignE = -1; //numero de la ligne à suprimer
-    int col;
-    int lig;
-    getmaxyx(stdscr,lig,col);
-    echo();
-    curs_set(1);
-    I_cleanBas(col,lig);
-    refresh();
-    char* StrTmp = malloc(sizeof(char) * 4000); //sert d'abord à strocher l'input pour ne numéro de la ligne puis l'input pour le contine
-    while(lignE < 1 || lignE > liste->nLignes){
-        mvprintw(lig-3,0,DEL);
-        move(lig-1,0); 
-        getstr(StrTmp);
-        if(strcmp(StrTmp,"") == 0) return;
-        lignE = atoi(StrTmp);
-        I_cleanBas(col,lig);
-    }
+    int lignE = I_askLine(liste, DEL);
+    if(lignE == -1) return;
     A_supression(liste,lignE);
-    noecho();
-    curs_set(0);
-    free(StrTmp);
 }
 
 void I_insert(struct headFile* liste){
-    positionEdit pos = AT_autopos(4096);
-    int lignE = -1; //position de la ligne à insérer
-    echo();
-    curs_set(1);
-    I_cleanBas(pos.taille +1,pos.y +1);
-    char* StrTmp = malloc(sizeof(char) * 4096); //sert d'abord à strocher l'input pour ne numéro de la ligne puis l'input pour le contine
-    memset(StrTmp,0,4096);
-    while(lignE < 1 || lignE > liste->nLignes){
-        mvprintw(pos.y-2,0,INSERT);
-        move(pos.y,0); 
-        refresh();
-        getstr(StrTmp);
-        if(strcmp(StrTmp,"") == 0) return;
-        lignE = atoi(StrTmp);
-        I_cleanBas(pos.taille +1,pos.y +1); 
-    }
-    I_cleanBas(pos.taille +1,pos.y +1); 
-    mvprintw(pos.y-2,0,LINE_TYPE);
-    memset(StrTmp,0,4096);
-    noecho();
-    curs_set(0);
-    AT_edit(StrTmp,pos);
+    int lignE = I_askLine(liste, INSERT); //position de la ligne à insérer
+    if(lignE == -1) return;
     A_insertion(liste,lignE);
-    A_writeListe(liste,lignE,StrTmp);
-    free(StrTmp);
+    char* txt = I_askTxt(LINE_TYPE);
+    A_writeListe(liste,lignE,txt);
+    free(txt);
 }
 
 void I_cleanBas(int col,int lig){   
@@ -340,5 +250,48 @@ void I_cleanBas(int col,int lig){
         mvprintw(lig-1,i," ");
         mvprintw(lig-3,i," ");
     }
+}
+
+int I_askLine(struct headFile* liste, const char* prompt){
+    I_noChut();
+    char* StrTmp = malloc(sizeof(char) * 4096);
+    memset(StrTmp,0,4096);
+    positionEdit pos = AT_autopos(4096);
+    I_cleanBas(pos.taille +1,pos.y +1);
+    int lignE = -1; //position de la ligne à insérer
+    while(lignE < 1 || lignE > liste->nLignes){
+        mvprintw(pos.y-2,0,prompt);
+        move(pos.y,0); 
+        refresh();
+        getstr(StrTmp);
+        if(strcmp(StrTmp,"") == 0) return -1;
+        lignE = atoi(StrTmp);
+        I_cleanBas(pos.taille +1,pos.y +1); 
+    }
+    free(StrTmp);
+    I_chut();
+    return lignE;
+}
+
+char* I_askTxt(const char* prompt){
+    I_noChut();
+    char* txt = malloc(sizeof(char) * 4096);
+    memset(txt,0,4096);
+    positionEdit pos = AT_autopos(4096);
+    I_cleanBas(pos.taille +1,pos.y +1); 
+    mvprintw(pos.y-2,0,prompt);
+    AT_edit(txt,pos);
+    I_chut();
+    return txt;
+}
+
+void I_chut(){
+    noecho();
+    curs_set(0);
+}
+
+void I_noChut(){
+    echo();
+    curs_set(1);
 }
 

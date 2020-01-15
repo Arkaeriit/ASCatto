@@ -137,16 +137,13 @@ int A_writeFile(struct headFile* liste, char* filename){
         return 1;
     }else{
         struct ligneFile* pnt = liste->next;
-        for(int i=1;i<liste->nLignes;i++){
+        for(int i=0;i<liste->nLignes;i++){
             memcpy(StrTmp,pnt->ligne,strlen(pnt->ligne)); //on stocke la ligne utile dans le tampon
             strcat(StrTmp,"\n"); //pour réenregister on a besoin du retour chariot
             fputs( StrTmp,fptr ); //On écrit chaque ligne de la liste dans le fichier
             pnt=pnt->next;
             memset(StrTmp,0,5000);
         }
-        memcpy(StrTmp,pnt->ligne,strlen(pnt->ligne));
-        strcat(StrTmp,"\n");
-        fputs( StrTmp,fptr );
         fclose(fptr); //On ferme le fichier
         free(StrTmp); //On a plus besoin du tampon
     }
