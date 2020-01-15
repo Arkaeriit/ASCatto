@@ -77,6 +77,10 @@ void I_redraw(struct headFile* liste,offstruct* offset,char* nom){
 }
 
 void I_idle(struct headFile* liste,char* nomInit){
+    bool isHelp = false;
+    int HelpLigne = 0; //Permet de voir où on en est dans le menu d'aide
+    char *HelpList[9] = {HELP_QUIT,HELP_SAVE,HELP_NEW_LINE,HELP_DEL_LINE,HELP_OPEN_LINE,HELP_PRINT,HELP_JUMP,HELP_ARROWS,HELP_ARROWS_SIDE};//stoque les message
+    
     char* nom = malloc(sizeof(char) * 1000);
     memcpy(nom,nomInit,strlen(nomInit));
     offstruct* offset = malloc(sizeof(offstruct));   
@@ -85,82 +89,14 @@ void I_idle(struct headFile* liste,char* nomInit){
     I_redraw(liste,offset,nom);
     int stop = 0;
     while(!stop){
-        int c = getch();
-    //mvprintw(1,1,"%i",c); //test
-        if(c==KEY_UP && offset->x > 1){ //up  on bouge vers le début du fichier
-            offset->x--;
-            I_redraw(liste,offset,nom);
+        if(isHelp){
+            int lig;
+            int col;
+            getmaxyx(stdscr,lig,col);
+            I_cleanBas(col,lig);
+            mvprintw(lig-3,0,HELP_INFO_HELP);
+            mvprintw(lig-1,0,"%s",HelpList[HelpLigne]);
         }
-        if(c==KEY_DOWN && offset->x < liste->nLignes){ //down on bouge vers le bas du fichier
-            offset->x++;
-            I_redraw(liste,offset,nom);
-        }
-        if(c==KEY_RIGHT && offset->y < 4000){ //flèche droite : on se décale
-            offset->y++;
-            I_redraw(liste,offset,nom);
-        }
-        if(c==KEY_LEFT && offset->y > 0){ //flèche gauche : on se décale
-            offset->y--;
-            I_redraw(liste,offset,nom);
-        }
-        if(c=='Q'){ //Q on arrète tout
-            stop=1;
-        }
-        if(c=='n'){ //n on écrit une nouvelle ligne
-            I_nouvelleLigne(liste);
-            I_redraw(liste,offset,nom);
-        }
-        if(c=='s'){ //s on sauvegarde
-            if(strcmp(nom,"")==0){
-                I_rename(nom);
-                I_redraw(liste,offset,nom);
-            }
-            while(A_writeFile(liste,nom)){ 
-                I_redraw(liste,offset,nom);
-                printw(INVALIDE);
-                I_rename(nom);
-            }
-            I_redraw(liste,offset,nom);
-        }
-        if(c=='e'){ //e on change une ligne
-            I_editLigne(liste);
-            I_redraw(liste,offset,nom);
-        }
-        if(c=='d'){ //d on supprime une ligne
-           I_delLigne(liste);
-           I_redraw(liste,offset,nom);
-        }
-        if(c=='i') { //i on insère une ligne
-            I_insert(liste);
-            I_redraw(liste,offset,nom);
-        }
-        if(c=='p') { //p on affiche une ligne
-            I_printLigne(liste,offset,nom);
-        }
-        if(c=='j'){ //j on saute vers une autre ligne
-            I_jumpLigne(liste,offset);
-            I_redraw(liste,offset,nom);
-        }
-        if(c=='h') { //h on affiche l'aide
-            stop = I_help(liste,offset,nom);
-            I_redraw(liste,offset,nom);
-        } 
-    }
-    echo();
-    endwin();
-}
-
-int I_help(struct headFile* liste,offstruct* offset,char* nom){
-    int HelpIligne = 0; //Permet de voir où on en est dans le menu d'aide
-    char *HelpList[9] = {HELP_QUIT,HELP_SAVE,HELP_NEW_LINE,HELP_DEL_LINE,HELP_OPEN_LINE,HELP_PRINT,HELP_JUMP,HELP_ARROWS,HELP_ARROWS_SIDE};//stoque les message d'aide pour un accès facile
-    int lig;
-    int col;
-    getmaxyx(stdscr,lig,col);
-    int stop = 0;
-    while(!stop){
-        I_cleanBas(col,lig);
-        mvprintw(lig-3,0,HELP_INFO_HELP);
-        mvprintw(lig-1,0,"%s",HelpList[HelpIligne]);
         refresh();
         int c = getch();
     //mvprintw(1,1,"%i",c); //test
@@ -182,18 +118,12 @@ int I_help(struct headFile* liste,offstruct* offset,char* nom){
         }
         if(c=='Q'){ //Q on arrète tout
             stop=1;
-            return stop;
         }
         if(c=='n'){ //n on écrit une nouvelle ligne
-            I_cleanBas(col,lig);
-            move(lig-1,0);
             I_nouvelleLigne(liste);
             I_redraw(liste,offset,nom);
-            return stop;
         }
         if(c=='s'){ //s on sauvegarde
-            I_cleanBas(col,lig);
-            move(lig-1,0);
             if(strcmp(nom,"")==0){
                 I_rename(nom);
                 I_redraw(liste,offset,nom);
@@ -204,43 +134,50 @@ int I_help(struct headFile* liste,offstruct* offset,char* nom){
                 I_rename(nom);
             }
             I_redraw(liste,offset,nom);
-            return stop;
         }
         if(c=='e'){ //e on change une ligne
-            I_cleanBas(col,lig);
             I_editLigne(liste);
             I_redraw(liste,offset,nom);
-            return stop;
         }
         if(c=='d'){ //d on supprime une ligne
-            I_cleanBas(col,lig);
            I_delLigne(liste);
            I_redraw(liste,offset,nom);
-           return stop;
         }
         if(c=='i') { //i on insère une ligne
-            I_cleanBas(col,lig);
             I_insert(liste);
             I_redraw(liste,offset,nom);
-            return stop;
         }
         if(c=='p') { //p on affiche une ligne
+            isHelp = false;
+            I_redraw(liste,offset,nom);
             I_printLigne(liste,offset,nom);
         }
         if(c=='j'){ //j on saute vers une autre ligne
             I_jumpLigne(liste,offset);
             I_redraw(liste,offset,nom);
         }
+        if(c=='h') { //h on affiche l'aide
+            isHelp = !isHelp;
+            HelpLigne = 0; 
+            I_redraw(liste,offset,nom);
+        }
         if(c==10){ //On apuie sur enter pour voir le message d'aide suivant
-            HelpIligne++;
-            if(HelpIligne==9) return stop;
+            HelpLigne++;
+            if(HelpLigne==9){
+                 isHelp = false;
+                 I_redraw(liste,offset,nom);
+            }
         }
         if(c==KEY_BACKSPACE){ //on apuie sur backspace pour retourner en arrière sur l'aide
-            HelpIligne--;
-            if(HelpIligne<0) return stop;
+            HelpLigne--;
+            if(HelpLigne<0){
+                isHelp = false;
+                I_redraw(liste,offset,nom);
+            }
         }
     }
-    return 0; //Si au cas où on arrive là (normalement impossible) on errète pas le programme.
+    echo();
+    endwin();
 }
 
 void I_printLigne(struct headFile* liste,offstruct* offset,char* nom){

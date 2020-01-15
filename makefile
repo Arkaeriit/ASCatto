@@ -2,9 +2,9 @@
 Flags = -Wall -Werror
 NC = -lncurses
 
-all : clean prog
+all : ASCatto 
 
-prog : attoLib.o main.o interface.o attoType.o
+ASCatto : attoLib.o main.o interface.o attoType.o
 	gcc main.o attoLib.o interface.o attoType.o $(NC) -o ASCatto
 
 attoLib.o : attoLib.c attoLib.h

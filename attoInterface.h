@@ -2,6 +2,7 @@
 #include "attoType.h"
 #include <ncurses.h>
 #include <locale.h>
+#include <stdbool.h>
 
 #ifndef OFFSET_STRUCT
 #define OFFSET_STRUCT
@@ -28,5 +29,4 @@ void I_delLigne(struct headFile* liste); //permet de supprimer une ligne
 void I_printLigne(struct headFile* liste, offstruct* offset,char* nom);//Permet d'afficher une ligne en bas de l'écran
 void I_jumpLigne(struct headFile* liste,offstruct* offset); //permet de se déplacer à une autre ligne, met à jour offset
 void I_insert(struct headFile* liste); //permet d'insérer une ligne quelque part
-int I_help(struct headFile* liste,offstruct* offset,char* nom);//Permet d'afficher le message d'aide mais en plus permet à tout instant d'utiliser une commande et de retourner dans la boucle idle. Cela renvoit un entier qui nous sert à savoir si on a essayé d'arréter le programme lors de l'aide.
 void I_cleanBas(int col,int lig); //permet de nétoyer l'espace en bas de l'écrant pour ensuite entrer des info.
