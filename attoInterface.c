@@ -15,18 +15,24 @@ void I_init(){
 }
 
 void I_displayListe(struct headFile* liste,int decades,offstruct* offset){ 
-    int lig = getmaxy(stdscr);
+    int lig,col;
+    getmaxyx(stdscr,lig,col);
     int max; //On ne veut pas avoir besoin d'afficher des lignes qui sont plus basse que l'écran.
     if(lig+offset->x -4 > liste->nLignes) max = liste->nLignes;
     else max = lig + offset->x - 4;    
+    char* tmp = malloc(sizeof(char) * 4096);
     for(int i=offset->x ;i<=max;i++){
         for(int j=0;j<decades+3;j++){
             mvprintw(i-offset->x ,j," ");
         }
         mvprintw(i-offset->x,1,"%i",i);//Numéro de la ligne
         mvprintw(i-offset->x,2+decades,"|"); //séparation
-        mvprintw(i-offset->x,3+decades,"%s",A_readListe(liste,i)+offset->y); //ligne en elle même
+        memset(tmp,0,4096);
+        strcpy(tmp,A_readListe(liste,i)+offset->y); //On fait en sorte de ne récupérer que ce qui nous interesse pour éviter que du texte ne dépasse sur la ligne d'en dessous
+        tmp[col] = 0;
+        mvprintw(i-offset->x,3+decades,"%s",tmp); //ligne en elle même
     }
+    free(tmp);
 }
 
 void I_displayInputBar(int max,int decades,offstruct* offset,char* nom){
