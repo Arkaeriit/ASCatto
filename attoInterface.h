@@ -29,6 +29,7 @@ void I_delLigne(struct headFile* liste); //permet de supprimer une ligne
 void I_printLigne(struct headFile* liste, offstruct* offset,char* nom);//Permet d'afficher une ligne en bas de l'écran
 void I_jumpLigne(struct headFile* liste,offstruct* offset); //permet de se déplacer à une autre ligne, met à jour offset
 void I_insert(struct headFile* liste); //permet d'insérer une ligne quelque part
+void I_swap(struct headFile* liste); //permet de swaper 2 lignes du texte
 void I_cleanBas(int col,int lig); //permet de nétoyer l'espace en bas de l'écrant pour ensuite entrer des info.
 int I_askLine(struct headFile* liste, const char* prompt); //Permet de demander de nomer une des lignes du texte
 char* I_askTxt(const char* prompt); //Permet d'entrer une ligne de texte

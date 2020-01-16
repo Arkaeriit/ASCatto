@@ -22,14 +22,14 @@ void I_displayListe(struct headFile* liste,int decades,offstruct* offset){
     else max = lig + offset->x - 4;    
     if(max == 0) return; //Nothing to do
     if(offset->x == 0) offset->x = 1; //On empèche d'accéder à des zones impossibles
-    char* tmp = malloc(sizeof(char) * 4096);
+    char* tmp = malloc(sizeof(char) * LINESIZE);
     for(int i=offset->x ;i<=max;i++){
         for(int j=0;j<decades+3;j++){
             mvprintw(i-offset->x ,j," ");
         }
         mvprintw(i-offset->x,1,"%i",i);//Numéro de la ligne
         mvprintw(i-offset->x,2+decades,"|"); //séparation
-        memset(tmp,0,4096);
+        memset(tmp,0, LINESIZE);
         strcpy(tmp,A_readListe(liste,i)+offset->y); //On fait en sorte de ne récupérer que ce qui nous interesse pour éviter que du texte ne dépasse sur la ligne d'en dessous
         tmp[col] = 0;
         mvprintw(i-offset->x,3+decades,"%s",tmp); //ligne en elle même
@@ -87,7 +87,7 @@ void I_redraw(struct headFile* liste,offstruct* offset,const char* nom){
 void I_idle(struct headFile* liste,const char* nomInit){
     bool isHelp = false;
     int HelpLigne = 0; //Permet de voir où on en est dans le menu d'aide
-    char *HelpList[9] = {HELP_QUIT,HELP_SAVE,HELP_NEW_LINE,HELP_DEL_LINE,HELP_OPEN_LINE,HELP_PRINT,HELP_JUMP,HELP_ARROWS,HELP_ARROWS_SIDE};//stoque les message
+    char *HelpList[NUMBER_OF_HELP] = {HELP_QUIT, HELP_SAVE, HELP_NEW_LINE, HELP_DEL_LINE, HELP_OPEN_LINE, HELP_PRINT, HELP_JUMP, HELP_SWAP, HELP_ARROWS, HELP_ARROWS_SIDE};//stoque les message
     
     char* nom = malloc(sizeof(char) * 1024);
     strcpy(nom,nomInit);
@@ -116,7 +116,7 @@ void I_idle(struct headFile* liste,const char* nomInit){
             offset->x++;
             I_redraw(liste,offset,nom);
         }
-        if(c==KEY_RIGHT && offset->y < 4000){ //flèche droite : on se décale
+        if(c==KEY_RIGHT && offset->y < LINESIZE){ //flèche droite : on se décale
             offset->y++;
             I_redraw(liste,offset,nom);
         }
@@ -167,6 +167,10 @@ void I_idle(struct headFile* liste,const char* nomInit){
         if(c=='h') { //h on affiche l'aide
             isHelp = !isHelp;
             HelpLigne = 0; 
+            I_redraw(liste,offset,nom);
+        }
+        if(c=='m') { //On déplace deux lignes
+            I_swap(liste);
             I_redraw(liste,offset,nom);
         }
         if(c==10){ //On apuie sur enter pour voir le message d'aide suivant
@@ -224,7 +228,7 @@ void I_rename(char* nom){ //TODO : changer la manière dont la mémoire pour le 
 }
 
 void I_editLigne(struct headFile* liste){
-    positionEdit pos = AT_autopos(4096);
+    positionEdit pos = AT_autopos(LINESIZE);
     int lignE = I_askLine(liste, EDIT); //numero de la ligne à éditer
     if(lignE == -1) return;
     AT_edit(A_readListe(liste,lignE),pos);
@@ -245,6 +249,21 @@ void I_insert(struct headFile* liste){
     free(txt);
 }
 
+void I_swap(struct headFile* liste){
+    int ligne1 = I_askLine(liste, SWAP_1);
+    if(ligne1 == -1) return;
+    int ligne2 = I_askLine(liste, SWAP_2);
+    if(ligne2 == -1) return;
+    char* str1 = malloc(sizeof(char) * LINESIZE);
+    char* str2 = malloc(sizeof(char) * LINESIZE);
+    strcpy(str1, A_readListe(liste, ligne1));
+    strcpy(str2, A_readListe(liste, ligne2));
+    A_writeListe(liste, ligne1, str2);
+    A_writeListe(liste, ligne2, str1);
+    free(str1);
+    free(str2);
+}
+
 void I_cleanBas(int col,int lig){   
     for(int i=0;i<col;i++){ //On nétoie la zone d'input
         mvprintw(lig-1,i," ");
@@ -254,9 +273,9 @@ void I_cleanBas(int col,int lig){
 
 int I_askLine(struct headFile* liste, const char* prompt){
     I_noChut();
-    char* StrTmp = malloc(sizeof(char) * 4096);
-    memset(StrTmp,0,4096);
-    positionEdit pos = AT_autopos(4096);
+    char* StrTmp = malloc(sizeof(char) * LINESIZE);
+    memset(StrTmp, 0, LINESIZE);
+    positionEdit pos = AT_autopos(LINESIZE);
     I_cleanBas(pos.taille +1,pos.y +1);
     int lignE = -1; //position de la ligne à insérer
     while(lignE < 1 || lignE > liste->nLignes){
@@ -275,9 +294,9 @@ int I_askLine(struct headFile* liste, const char* prompt){
 
 char* I_askTxt(const char* prompt){
     I_noChut();
-    char* txt = malloc(sizeof(char) * 4096);
-    memset(txt,0,4096);
-    positionEdit pos = AT_autopos(4096);
+    char* txt = malloc(sizeof(char) * LINESIZE);
+    memset(txt,0, LINESIZE);
+    positionEdit pos = AT_autopos(LINESIZE);
     I_cleanBas(pos.taille +1,pos.y +1); 
     mvprintw(pos.y-2,0,prompt);
     AT_edit(txt,pos);

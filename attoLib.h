@@ -25,6 +25,7 @@ struct headFile {
 
 #endif
 
+#define LINESIZE 4096
 
 //Fonctions de gestions des listes liés
 struct headFile* A_initialisation(void); 

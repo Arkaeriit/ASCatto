@@ -1,6 +1,8 @@
 /* If fr is equal to 1 the program will be in French. Otherwise it will be in english*/
 #define fr 0
 
+#define NUMBER_OF_HELP 10
+
 #if fr == 1
 #define HOWTO "Apuillez sur h pour afficher l'aide"
 #define INVALIDE "Nom invalide...  "
@@ -12,6 +14,8 @@
 #define LINE_TYPE "Tapez la nouvelle ligne."
 #define JUMP "Position de la destination."
 #define PRINT "Ligne à afficher."
+#define SWAP_1 "Première ligne à échanger."
+#define SWAP_2 "Avec quelle ligne l'échanger ?"
 #define HELP_QUIT "Tapez Q pour quiter."
 #define HELP_SAVE "Tapez s pour sauvegarder."
 #define HELP_NEW_LINE "Tapez n pour ajouter une nouvelle ligne."
@@ -22,6 +26,7 @@
 #define HELP_INFO_HELP "Tapez Entrer pour avancer dans l'aide et backspace pour reculer. Tapez h pour quiter l'aide."
 #define HELP_JUMP "Pour vous rendre à une ligne tapez j puis le numéro de la ligne."
 #define HELP_PRINT "Pour afficher une ligne toute seule tapez p puis le numéro de la ligne."
+#define HELP_SWAP "Pour echanger deux lignes taper s puis le numéro de chacune des lignes."
 
 #else
 #define HOWTO "Press h for help"
@@ -34,6 +39,8 @@
 #define LINE_TYPE "Type the new line."
 #define JUMP "Where to jump?"
 #define PRINT "Which line print?"
+#define SWAP_1 "First line to swap."
+#define SWAP_2 "Second line to swap."
 #define HELP_QUIT "Press Q to quit."
 #define HELP_SAVE "Press s to save."
 #define HELP_NEW_LINE "Press n to write a new line."
@@ -44,6 +51,7 @@
 #define HELP_INFO_HELP "Press Return to see the next help message, press backspace to go back. Press h to toggle help."
 #define HELP_JUMP "To go to any line press j then the nuber of the line."
 #define HELP_PRINT "To print any line on the bottom of the screen press p then the number of the line."
+#define HELP_SWAP "To swap two lines press s then enter the number of the two lines."
 
 #endif
 

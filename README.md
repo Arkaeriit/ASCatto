@@ -15,6 +15,7 @@ ASCatto is written in C and the interface is made with ncurses.
 Recent modification:
 * Help menu is improved.
 * Lines are not overlaping anymore.
+* We can swap lines.
 
 To do:
 - [x] Let the user view lines larger than the terminal screen.
