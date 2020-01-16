@@ -8,7 +8,7 @@ struct headFile* A_initialisation(void){
     return ret;
 }
 
-struct ligneFile* A_recuperation(struct headFile* liste,int element){
+struct ligneFile* A_recuperation(const struct headFile* liste,int element){
     if(element > liste->nLignes || element < 1){
         printf("Erreur, mauvais indexage");
         exit(EXIT_FAILURE);
@@ -96,7 +96,7 @@ void A_writeListe(struct headFile* liste,int element,char* str){
     memcpy(pnt->ligne,str,strlen(str));
 }
  
-char* A_readListe(struct headFile* liste,int element){
+char* A_readListe(const struct headFile* liste,int element){
     if(element > liste->nLignes || element < 1){
         printf("Erreur, mauvais indexage");
         exit(EXIT_FAILURE);
@@ -107,7 +107,7 @@ char* A_readListe(struct headFile* liste,int element){
     }
     return pnt->ligne;
 }   
-struct headFile* A_readFile(char *filename){
+struct headFile* A_readFile(const char *filename){
         FILE* fptr;
         struct headFile* ret = A_initialisation();
         ret->next = malloc(sizeof(struct ligneFile));
@@ -128,7 +128,7 @@ struct headFile* A_readFile(char *filename){
     return ret;
 }
 
-int A_writeFile(struct headFile* liste, char* filename){
+int A_writeFile(const struct headFile* liste, char* filename){
     FILE* fptr;
     char* StrTmp = malloc(sizeof(char) * (LINESIZE + 1)); //On ajoute un \n à la fin des lignes donc on passe par cette chaine de caractères tampon pour ne pas salir la liste
     if( (fptr = fopen(filename,"w")) == NULL){ //on essaye de metre un pointeur vers le fichier dans fptr. Si ne marche pas on renvoie 1 pour idiquer que ça ne marche pas. Sinon on va dans le else

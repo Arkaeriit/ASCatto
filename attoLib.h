@@ -29,14 +29,14 @@ struct headFile {
 
 //Fonctions de gestions des listes liés
 struct headFile* A_initialisation(void); 
-struct ligneFile* A_recuperation(struct headFile* liste,int element); //récupère le pointeur vers l'élément d'indice voulu
+struct ligneFile* A_recuperation(const struct headFile* liste,int element); //récupère le pointeur vers l'élément d'indice voulu
 void A_supression(struct headFile* liste,int element); //suprime l'élément d'undice voulu
 void A_insertion(struct headFile* liste,int element); //insère un élément à la position voulue
 void A_append(struct headFile* liste); //ajoute un élément à la fin de la liste
 void A_writeListe(struct headFile* liste,int element,char* str); //copie str dans l'élément voulu de liste
-char* A_readListe(struct headFile* liste,int element); //renvoie la chaine de charactère stockée à la place voulue de liste
+char* A_readListe(const struct headFile* liste,int element); //renvoie la chaine de charactère stockée à la place voulue de liste
 
 //Fonctions de gestion des fichiers
-struct headFile* A_readFile(char* fichier); //met chaque ligne de fichier dans un élément d'une liste
-int A_writeFile(struct headFile* liste,char* fichier); //écrit le contenu de la liste dans fichier
+struct headFile* A_readFile(const char* fichier); //met chaque ligne de fichier dans un élément d'une liste
+int A_writeFile(const struct headFile* liste,char* fichier); //écrit le contenu de la liste dans fichier
 

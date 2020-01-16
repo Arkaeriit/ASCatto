@@ -14,7 +14,7 @@ void I_init(){
     curs_set(0);
 }
 
-void I_displayListe(struct headFile* liste,int decades,offstruct* offset){ 
+void I_displayListe(const struct headFile* liste,int decades,offstruct* offset){ 
     int lig,col;
     getmaxyx(stdscr,lig,col);
     int max; //On ne veut pas avoir besoin d'afficher des lignes qui sont plus basse que l'écran.
@@ -72,7 +72,7 @@ void I_displayInputBar(int max,int decades,const offstruct* offset,const char* n
     move(lig-1,0);
 }
 
-void I_redraw(struct headFile* liste,offstruct* offset,const char* nom){
+void I_redraw(const struct headFile* liste,offstruct* offset,const char* nom){
     int decades=1; //Nombres de caractères à prévoir pour écrire le numéro de la ligne
     if(liste->nLignes > 9) decades++;
     if(liste->nLignes > 99) decades++;
@@ -89,7 +89,7 @@ void I_idle(struct headFile* liste,const char* nomInit){
     int HelpLigne = 0; //Permet de voir où on en est dans le menu d'aide
     char *HelpList[NUMBER_OF_HELP] = {HELP_QUIT, HELP_SAVE, HELP_NEW_LINE, HELP_DEL_LINE, HELP_OPEN_LINE, HELP_PRINT, HELP_JUMP, HELP_SWAP, HELP_ARROWS, HELP_ARROWS_SIDE};//stoque les message
     
-    char* nom = malloc(sizeof(char) * 1024);
+    char* nom = malloc(sizeof(char) * FILENAMESIZE);
     strcpy(nom,nomInit);
     offstruct* offset = malloc(sizeof(offstruct));   
     offset->x = 1; //décalage haut/bas
@@ -158,7 +158,7 @@ void I_idle(struct headFile* liste,const char* nomInit){
         if(c=='p') { //p on affiche une ligne
             isHelp = false;
             I_redraw(liste,offset,nom);
-            I_printLigne(liste,offset,nom);
+            I_printLigne(liste, offset);
         }
         if(c=='j'){ //j on saute vers une autre ligne
             I_jumpLigne(liste,offset);
@@ -192,14 +192,14 @@ void I_idle(struct headFile* liste,const char* nomInit){
     endwin();
 }
 
-void I_printLigne(struct headFile* liste,offstruct* offset,char* nom){
+void I_printLigne(const struct headFile* liste, const offstruct* offset){
     int lig = getmaxy(stdscr);
     int lignE = I_askLine(liste, PRINT);
     if(lignE == -1) return;
     mvprintw(lig-1,0,A_readListe(liste,lignE)); //On affiche la ligne
 }
 
-void I_jumpLigne(struct headFile* liste,offstruct* offset){
+void I_jumpLigne(const struct headFile* liste,offstruct* offset){
     int lignE = I_askLine(liste, JUMP);
     if(lignE == -1) return;
     offset->x = lignE;
@@ -213,7 +213,7 @@ void I_nouvelleLigne(struct headFile* liste){
 }
 
 void I_rename(char* nom){ //TODO : changer la manière dont la mémoire pour le nom est allouée pour pouvoir éviter de générer des array en boucle
-    char* ret=malloc(sizeof(char) * 1024);
+    char* ret=malloc(sizeof(char) * FILENAMESIZE);
     printw(NAME);
     echo();
     curs_set(1);
@@ -271,7 +271,7 @@ void I_cleanBas(int col,int lig){
     }
 }
 
-int I_askLine(struct headFile* liste, const char* prompt){
+int I_askLine(const struct headFile* liste, const char* prompt){
     I_noChut();
     char* StrTmp = malloc(sizeof(char) * LINESIZE);
     memset(StrTmp, 0, LINESIZE);
